@@ -1,5 +1,6 @@
 #include "../headers/main/asteroid.h"
 #include "../headers/main/globals.h"
+#include "../headers/main/destroyer.h"
 #include <math.h>
 
 int activeAsteroids = 0;        // Define globals here
@@ -10,17 +11,23 @@ void LoadAsteroid()
     asteroidTexture = LoadTexture("sprite/asteroid.png");
 }
 
+void UnloadAsteroid()
+{
+    UnloadTexture(asteroidTexture);
+}
+
 void SummonAsteroid(void* context)
 {
     (void)context;
+    Destroyer* destroyer = (Destroyer*)context;
     for(int i = 0; i < MAX_ASTEROIDS; i++)
     {
         if(!asteroids[i].active)
         {
             asteroids[i].rot = GetRandomValue(0, 360);
-            asteroids[i].speed = GetRandomValue(4, 8);
-            asteroids[i].rotSpeeed = GetRandomValue(2, 10);
-            asteroids[i].size = GetRandomValue(25, 60);
+            asteroids[i].speed = GetRandomValue(2, 6);
+            asteroids[i].rotSpeeed = GetRandomValue(2, 7);
+            asteroids[i].size = GetRandomValue(25, 70);
             asteroids[i].vel = (Vector2){cos((asteroids[i].rot * DEG2RAD) - (PI / 2)) * asteroids[i].speed, sin((asteroids[i].rot * DEG2RAD) - (PI / 2)) * asteroids[i].speed};
             asteroids[i].pos = (Vector2){(float)SIM_WINDOW_SIZE_X / 2 - asteroids[i].size / 2 + cos((asteroids[i].rot * DEG2RAD) - (PI / 2)) * -SIM_WINDOW_SIZE_X, (float)SIM_WINDOW_SIZE_Y / 2 - asteroids[i].size / 2 + sin((asteroids[i].rot * DEG2RAD) - (PI / 2)) * -SIM_WINDOW_SIZE_Y};
             asteroids[i].active = true;
@@ -47,7 +54,10 @@ void DrawAsteroid(Asteroid* asteroid)
 {
     if(asteroid->active)
     {
-        DrawTexturePro(asteroidTexture, (Rectangle){0, 0, 32, 32}, asteroid->rect, (Vector2){asteroid->size / 2, asteroid->size / 2}, asteroid->rot, WHITE);
+        DrawTexturePro(asteroidTexture, (Rectangle){0, 0, 32, 32}, 
+            (Rectangle){asteroid->pos.x + asteroid->size / 2, asteroid->pos.y + asteroid->size / 2, asteroid->size, asteroid->size}, 
+            (Vector2){asteroid->size / 2, asteroid->size / 2}, asteroid->rot, WHITE);
+        if(f3On) DrawRectangleLinesEx(asteroid->rect, 4, RED);
     }
 }
 

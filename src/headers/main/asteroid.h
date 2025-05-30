@@ -24,6 +24,7 @@ extern int activeAsteroids;
 extern Asteroid asteroids[MAX_ASTEROIDS];
 
 void LoadAsteroid();
+void UnloadAsteroid();
 void SummonAsteroid(void* context);
 void UpdateAsteroid(Asteroid* Asteroid);
 void DrawAsteroid(Asteroid* Asteroid);

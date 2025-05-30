@@ -8,6 +8,11 @@ void LoadDestroyer()
     destroyerTexture = LoadTexture("sprite/destroyer.png");
 }
 
+void UnloadDestroyer()
+{
+    UnloadTexture(destroyerTexture);
+}
+
 void InitDestroyer(Destroyer *destroyer)
 {
     destroyer->size = (Vector2){128, 128};
@@ -15,6 +20,7 @@ void InitDestroyer(Destroyer *destroyer)
     destroyer->vel = (Vector2){0, 0};
     destroyer->rot = 0;
     destroyer->rect = (Rectangle){destroyer->pos.x, destroyer->pos.y, destroyer->size.x, destroyer->size.y};
+    destroyer->hitbox = (Rectangle){destroyer->pos.x + DESTROYER_HITBOX_BUFFER, destroyer->pos.y + DESTROYER_HITBOX_BUFFER, destroyer->size.x - DESTROYER_HITBOX_BUFFER * 2, destroyer->size.y - DESTROYER_HITBOX_BUFFER * 2};
 }
 
 void UpdateDestroyer(Destroyer *destroyer)
@@ -59,7 +65,12 @@ void UpdateDestroyer(Destroyer *destroyer)
     destroyer->pos.y = clamp(destroyer->pos.y, 0, SIM_WINDOW_SIZE_Y - destroyer->size.y);
     
     destroyer->rot = (float) atan2(vMouse.y - destroyer->pos.y, vMouse.x - destroyer->pos.x) * RAD2DEG + 90.0f;
+    
     destroyer->rect = (Rectangle){destroyer->pos.x, destroyer->pos.y, destroyer->size.x, destroyer->size.y};
+    destroyer->hitbox = (Rectangle){destroyer->pos.x + DESTROYER_HITBOX_BUFFER, destroyer->pos.y + DESTROYER_HITBOX_BUFFER, destroyer->size.x - DESTROYER_HITBOX_BUFFER * 2, destroyer->size.y - DESTROYER_HITBOX_BUFFER * 2};
+    
+    if(destroyer->pos.x <= 0 || destroyer->pos.x >= SIM_WINDOW_SIZE_X - destroyer->size.x) destroyer->vel.x = 0;
+    if(destroyer->pos.y <= 0 || destroyer->pos.y >= SIM_WINDOW_SIZE_Y - destroyer->size.y) destroyer->vel.y = 0;
 }
 
 void DrawDestroyer(Destroyer *destroyer)
@@ -68,4 +79,5 @@ void DrawDestroyer(Destroyer *destroyer)
         (Rectangle){destroyer->pos.x + destroyer->size.x / 2, destroyer->pos.y + destroyer->size.y / 2, destroyer->size.x, destroyer->size.y}, 
         (Vector2){destroyer->size.x / 2, destroyer->size.y / 2}, destroyer->rot, WHITE);
     if(f3On) DrawRectangleLinesEx(destroyer->rect, 4, ORANGE);
+    if(f3On) DrawRectangleLinesEx(destroyer->hitbox, 4, YELLOW);
 }

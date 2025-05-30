@@ -1,6 +1,8 @@
 #include "../headers/raylib/raylib.h"
 #include "../headers/raylib/resource_dir.h"
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "../headers/main/globals.h"
 #include "../headers/main/star.h"
@@ -8,14 +10,17 @@
 #include "../headers/main/projectile.h"
 #include "../headers/main/asteroid.h"
 #include "../headers/main/timer.h"
+#include "../headers/main/text.h"
 
 Color SUPERDARKGRAY = {15, 15, 15, 255};
+bool shouldExitGame = false;
 float simDT;
 Vector2 vMouse;
 Vector2 windowSize;
 float scale;
 RenderTexture2D target;
-bool f3On;
+bool f3On = false;
+int score = 0;
 
 float min(float a, float b) {
     return a < b ? a : b;
@@ -29,6 +34,15 @@ float clamp(float x, float low, float high) {
     return min(max(x, low), high);
 }
 
+char* concat(const char *s1, const char *s2)
+{
+    char *result = (char *) malloc(strlen(s1) + strlen(s2) + 1); // +1 for the null-terminator
+    // in real code you would check for errors in malloc here
+    strcpy(result, s1);
+    strcat(result, s2);
+    return result;
+}
+
 
 int main(void)
 {
@@ -37,8 +51,9 @@ int main(void)
     SearchAndSetResourceDir("res");
     
     target = LoadRenderTexture(SIM_WINDOW_SIZE_X, SIM_WINDOW_SIZE_Y);
-        SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
     
+    LoadFonts();
     LoadDestroyer();
     LoadAsteroid();
 
@@ -56,9 +71,9 @@ int main(void)
     InitDestroyer(&destroyer);
     
     Timer asteroidSpawnTimer;
-    InitTimer(&asteroidSpawnTimer, 0.3f, true, true, SummonAsteroid, NULL);
+    InitTimer(&asteroidSpawnTimer, 0.5f, true, true, SummonAsteroid, &destroyer);
     
-    while (!WindowShouldClose())
+    while (!WindowShouldClose() && !shouldExitGame)
     {
         windowSize = (Vector2){(float) GetScreenWidth(), (float) GetScreenHeight()};
         simDT = GetFrameTime() * 60;
@@ -115,8 +130,11 @@ int main(void)
         }
         
         DrawDestroyer(&destroyer);
-        if(f3On) DrawText(TextFormat("Active Projectiles: %i", activeProjectiles), 10, 10, 32, WHITE);
-        if(f3On) DrawText(TextFormat("Active Asteroids: %i", activeAsteroids), 10, 50, 32, WHITE);
+        
+        DrawAudiowideText(TextFormat("Score: %i", score), (Vector2){10, 10}, 32, WHITE);
+        if(f3On) DrawAudiowideText(TextFormat("Active Projectiles: %i", activeProjectiles), (Vector2){10, 50}, 16, LIGHTGRAY);
+        if(f3On) DrawAudiowideText(TextFormat("Active Asteroids: %i", activeAsteroids), (Vector2){10, 70}, 16, LIGHTGRAY);
+        if(f3On) DrawAudiowideText(concat(TextFormat("Destroyer Position: %.0f", destroyer.pos.x), TextFormat(", %.0f", destroyer.pos.y)), (Vector2){10, 90}, 16, LIGHTGRAY);
         
         if(target.texture.id != 0) EndTextureMode();
         
@@ -131,6 +149,10 @@ int main(void)
         EndDrawing();
     }
 
+    UnloadFonts();
+    UnloadDestroyer();
+    UnloadAsteroid();
+    
     CloseWindow();
 
     return 0;

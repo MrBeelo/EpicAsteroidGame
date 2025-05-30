@@ -3,7 +3,7 @@
 
 #include "../raylib/raylib.h"
 
-#define PROJECTILE_SPEED 8
+#define PROJECTILE_SPEED 15
 #define MAX_PROJECTILES 10
 
 typedef struct Projectile
@@ -12,6 +12,7 @@ typedef struct Projectile
 	Vector2 size;
 	Vector2 vel;
 	float rot;
+	Rectangle rect;
 	bool active;
 } Projectile;
 
