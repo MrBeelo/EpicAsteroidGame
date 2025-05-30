@@ -2,7 +2,7 @@
 #include "../headers/main/globals.h"
 #include <math.h>
 
-int activeProjectiles = 0;        // Define globals here
+int activeProjectiles = 0;
 Projectile projectiles[MAX_PROJECTILES] = { 0 };
 
 void SummonProjectile(Vector2 pos, float rot)
@@ -30,7 +30,7 @@ void InitProjectile(Projectile *projectile)
 {
     for(int i = 0; i < MAX_PROJECTILES; i++)
     {
-        projectiles[i].size = (Vector2){2, 8};
+        projectiles[i].size = (Vector2){4, 24};
         projectiles[i].active = false;
     }
 }
@@ -41,7 +41,7 @@ void UpdateProjectile(Projectile *projectile)
     {
         projectile->pos.x += projectile->vel.x * simDT;
         projectile->pos.y += projectile->vel.y * simDT;
-        if(projectile->pos.x > SIM_WINDOW_SIZE_X + 10 || projectile->pos.x < 10 || projectile->pos.y > SIM_WINDOW_SIZE_Y + 10 || projectile->pos.y < 10) KillProjectile(projectile);
+        if(projectile->pos.x > SIM_WINDOW_SIZE_X + 10 || projectile->pos.x < -10 || projectile->pos.y > SIM_WINDOW_SIZE_Y + -10 || projectile->pos.y < 10) KillProjectile(projectile);
     }
 }
 

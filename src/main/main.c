@@ -1,10 +1,13 @@
 #include "../headers/raylib/raylib.h"
 #include "../headers/raylib/resource_dir.h"
+#include <stddef.h>
 
 #include "../headers/main/globals.h"
 #include "../headers/main/star.h"
 #include "../headers/main/destroyer.h"
 #include "../headers/main/projectile.h"
+#include "../headers/main/asteroid.h"
+#include "../headers/main/timer.h"
 
 Color SUPERDARKGRAY = {15, 15, 15, 255};
 float simDT;
@@ -37,6 +40,7 @@ int main(void)
         SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
     
     LoadDestroyer();
+    LoadAsteroid();
 
     for(int i = 0; i < MAX_STARS; i++)
     {
@@ -50,6 +54,9 @@ int main(void)
     
     Destroyer destroyer;
     InitDestroyer(&destroyer);
+    
+    Timer asteroidSpawnTimer;
+    InitTimer(&asteroidSpawnTimer, 0.3f, true, true, SummonAsteroid, NULL);
     
     while (!WindowShouldClose())
     {
@@ -78,6 +85,16 @@ int main(void)
             UpdateProjectile(&projectiles[i]);
         }
         
+        activeAsteroids = 0;
+        
+        for(int i = 0; i < MAX_ASTEROIDS; i++)
+        {
+            if(asteroids[i].active) activeAsteroids++;
+            UpdateAsteroid(&asteroids[i]);
+        }
+        
+        UpdateTimer(&asteroidSpawnTimer);
+        
         if(target.texture.id != 0) BeginTextureMode(target);
         
         ClearBackground(SUPERDARKGRAY);
@@ -92,8 +109,14 @@ int main(void)
             DrawProjectile(&projectiles[i]);
         }
         
+        for(int i = 0; i < MAX_ASTEROIDS; i++)
+        {
+            DrawAsteroid(&asteroids[i]);
+        }
+        
         DrawDestroyer(&destroyer);
         if(f3On) DrawText(TextFormat("Active Projectiles: %i", activeProjectiles), 10, 10, 32, WHITE);
+        if(f3On) DrawText(TextFormat("Active Asteroids: %i", activeAsteroids), 10, 50, 32, WHITE);
         
         if(target.texture.id != 0) EndTextureMode();
         
