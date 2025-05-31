@@ -18,6 +18,7 @@ typedef struct Destroyer
 	Rectangle rect;
 	Rectangle hitbox;
 	bool isMoving;
+	int immunity;
 } Destroyer;
 
 void LoadDestroyer();

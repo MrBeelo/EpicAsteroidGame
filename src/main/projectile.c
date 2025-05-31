@@ -47,7 +47,7 @@ void UpdateProjectile(Projectile *projectile)
         projectile->rect = (Rectangle){projectile->pos.x, projectile->pos.y, projectile->size.x, projectile->size.y};
         
         for(int i = 0; i < MAX_ASTEROIDS; i++) if(asteroids[i].active && CheckCollisionRecs(projectile->rect, asteroids[i].rect)) {
-            score += asteroids[i].size;
+            score += 100 - asteroids[i].size;
             KillAsteroid(&asteroids[i]);
             KillProjectile(projectile);
         }

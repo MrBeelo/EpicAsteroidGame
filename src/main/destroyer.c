@@ -1,6 +1,8 @@
 #include "../headers/main/destroyer.h"
 #include "../headers/main/globals.h"
 #include "../headers/main/projectile.h"
+#include "../headers/main/asteroid.h"
+#include "../headers/main/heart.h"
 #include <math.h>
 
 void LoadDestroyer()
@@ -21,6 +23,7 @@ void InitDestroyer(Destroyer *destroyer)
     destroyer->rot = 0;
     destroyer->rect = (Rectangle){destroyer->pos.x, destroyer->pos.y, destroyer->size.x, destroyer->size.y};
     destroyer->hitbox = (Rectangle){destroyer->pos.x + DESTROYER_HITBOX_BUFFER, destroyer->pos.y + DESTROYER_HITBOX_BUFFER, destroyer->size.x - DESTROYER_HITBOX_BUFFER * 2, destroyer->size.y - DESTROYER_HITBOX_BUFFER * 2};
+    destroyer->immunity = 0;
 }
 
 void UpdateDestroyer(Destroyer *destroyer)
@@ -71,6 +74,17 @@ void UpdateDestroyer(Destroyer *destroyer)
     
     if(destroyer->pos.x <= 0 || destroyer->pos.x >= SIM_WINDOW_SIZE_X - destroyer->size.x) destroyer->vel.x = 0;
     if(destroyer->pos.y <= 0 || destroyer->pos.y >= SIM_WINDOW_SIZE_Y - destroyer->size.y) destroyer->vel.y = 0;
+    
+    for(int i = 0; i < MAX_ASTEROIDS; i++)
+    {
+        if(asteroids[i].active && CheckCollisionRecs(destroyer->rect, asteroids[i].rect) && destroyer->immunity == 0)
+        {
+            destroyer->immunity = 300;
+            RemoveHeart();
+        }
+    }
+    
+    if(destroyer->immunity > 0) destroyer->immunity -= simDT;
 }
 
 void DrawDestroyer(Destroyer *destroyer)

@@ -11,6 +11,7 @@
 #include "../headers/main/asteroid.h"
 #include "../headers/main/timer.h"
 #include "../headers/main/text.h"
+#include "../headers/main/heart.h"
 
 Color SUPERDARKGRAY = {15, 15, 15, 255};
 bool shouldExitGame = false;
@@ -56,6 +57,7 @@ int main(void)
     LoadFonts();
     LoadDestroyer();
     LoadAsteroid();
+    LoadHeart();
 
     for(int i = 0; i < MAX_STARS; i++)
     {
@@ -65,6 +67,11 @@ int main(void)
     for(int i = 0; i < MAX_PROJECTILES; i++)
     {
         InitProjectile(&projectiles[i]);   
+    }
+    
+    for(int i = 0; i < MAX_HEARTS; i++)
+    {
+        InitHeart(&hearts[i], i);   
     }
     
     Destroyer destroyer;
@@ -108,6 +115,14 @@ int main(void)
             UpdateAsteroid(&asteroids[i]);
         }
         
+        activeHearts = 0;
+        
+        for(int i = 0; i < MAX_HEARTS; i++)
+        {
+            if(hearts[i].on) activeHearts++;
+            UpdateHeart(&hearts[i]);   
+        }
+        
         UpdateTimer(&asteroidSpawnTimer);
         
         if(target.texture.id != 0) BeginTextureMode(target);
@@ -129,12 +144,22 @@ int main(void)
             DrawAsteroid(&asteroids[i]);
         }
         
+        for(int i = 0; i < MAX_HEARTS; i++)
+        {
+            DrawHeart(&hearts[i]);   
+        }
+        
         DrawDestroyer(&destroyer);
         
         DrawAudiowideText(TextFormat("Score: %i", score), (Vector2){10, 10}, 32, WHITE);
-        if(f3On) DrawAudiowideText(TextFormat("Active Projectiles: %i", activeProjectiles), (Vector2){10, 50}, 16, LIGHTGRAY);
-        if(f3On) DrawAudiowideText(TextFormat("Active Asteroids: %i", activeAsteroids), (Vector2){10, 70}, 16, LIGHTGRAY);
-        if(f3On) DrawAudiowideText(concat(TextFormat("Destroyer Position: %.0f", destroyer.pos.x), TextFormat(", %.0f", destroyer.pos.y)), (Vector2){10, 90}, 16, LIGHTGRAY);
+        if(f3On)
+        {
+            DrawAudiowideText(TextFormat("Active Projectiles: %i", activeProjectiles), (Vector2){10, 50}, 16, LIGHTGRAY);
+            DrawAudiowideText(TextFormat("Active Asteroids: %i", activeAsteroids), (Vector2){10, 70}, 16, LIGHTGRAY);
+            DrawAudiowideText(TextFormat("Active Hearts: %i", activeHearts), (Vector2){10, 90}, 16, LIGHTGRAY);
+            DrawAudiowideText(concat(TextFormat("Destroyer Position: %.0f", destroyer.pos.x), TextFormat(", %.0f", destroyer.pos.y)), (Vector2){10, 110}, 16, LIGHTGRAY);
+            DrawAudiowideText(TextFormat("Immunity: %i", destroyer.immunity), (Vector2){10, 130}, 16, LIGHTGRAY);
+        }
         
         if(target.texture.id != 0) EndTextureMode();
         
@@ -152,6 +177,7 @@ int main(void)
     UnloadFonts();
     UnloadDestroyer();
     UnloadAsteroid();
+    UnloadHeart();
     
     CloseWindow();
 
