@@ -1,6 +1,6 @@
-#include "../headers/main/projectile.h"
+#include "../headers/sprite/projectile.h"
 #include "../headers/main/globals.h"
-#include "../headers/main/asteroid.h"
+#include "../headers/sprite/asteroid.h"
 #include <math.h>
 
 int activeProjectiles = 0;

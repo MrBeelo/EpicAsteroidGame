@@ -2,7 +2,7 @@
 #define STAR_H
 
 #include "../raylib/raylib.h"
-#include "../main/destroyer.h"
+#include "../sprite/destroyer.h"
 
 #define MAX_STARS 100
 #define STAR_SIZE 3

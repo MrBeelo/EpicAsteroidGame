@@ -1,8 +1,8 @@
-#include "../headers/main/destroyer.h"
+#include "../headers/sprite/destroyer.h"
 #include "../headers/main/globals.h"
-#include "../headers/main/projectile.h"
-#include "../headers/main/asteroid.h"
-#include "../headers/main/heart.h"
+#include "../headers/sprite/projectile.h"
+#include "../headers/sprite/asteroid.h"
+#include "../headers/sprite/heart.h"
 #include <math.h>
 
 void LoadDestroyer()
@@ -77,7 +77,7 @@ void UpdateDestroyer(Destroyer *destroyer)
     
     for(int i = 0; i < MAX_ASTEROIDS; i++)
     {
-        if(asteroids[i].active && CheckCollisionRecs(destroyer->rect, asteroids[i].rect) && destroyer->immunity == 0)
+        if(asteroids[i].active && CheckCollisionRecs(destroyer->hitbox, asteroids[i].rect) && destroyer->immunity == 0)
         {
             destroyer->immunity = 300;
             RemoveHeart();
@@ -85,13 +85,43 @@ void UpdateDestroyer(Destroyer *destroyer)
     }
     
     if(destroyer->immunity > 0) destroyer->immunity -= simDT;
+    
+    if(!hearts[MAX_HEARTS - 1].on)
+    {
+        gamestate = DEAD;
+        ResetDestroyer(destroyer);
+    }
 }
 
 void DrawDestroyer(Destroyer *destroyer)
 {
+    Color destroyerColor = WHITE;
+    if(destroyer->immunity > 0) destroyerColor =  ColorLerp(WHITE, RED, (sin(GetTime() * 5) + 1) / 2);
+    
     DrawTexturePro(destroyerTexture, (Rectangle){destroyer->isMoving * 32, 0, 32, 32},
         (Rectangle){destroyer->pos.x + destroyer->size.x / 2, destroyer->pos.y + destroyer->size.y / 2, destroyer->size.x, destroyer->size.y}, 
-        (Vector2){destroyer->size.x / 2, destroyer->size.y / 2}, destroyer->rot, WHITE);
+        (Vector2){destroyer->size.x / 2, destroyer->size.y / 2}, destroyer->rot, destroyerColor);
     if(f3On) DrawRectangleLinesEx(destroyer->rect, 4, ORANGE);
     if(f3On) DrawRectangleLinesEx(destroyer->hitbox, 4, YELLOW);
+}
+
+void ResetDestroyer(Destroyer* destroyer)
+{
+    destroyer->pos = (Vector2){(float)SIM_WINDOW_SIZE_X / 2 - (float)destroyer->size.x / 2, (float)SIM_WINDOW_SIZE_Y / 2 - (float)destroyer->size.y / 2};
+    destroyer->vel = (Vector2){0, 0};
+    destroyer->rot = 0;
+    
+    destroyer->rect = (Rectangle){destroyer->pos.x, destroyer->pos.y, destroyer->size.x, destroyer->size.y};
+    destroyer->hitbox = (Rectangle){destroyer->pos.x + DESTROYER_HITBOX_BUFFER, destroyer->pos.y + DESTROYER_HITBOX_BUFFER, destroyer->size.x - DESTROYER_HITBOX_BUFFER * 2, destroyer->size.y - DESTROYER_HITBOX_BUFFER * 2};
+    
+    for(int i = 0; i < MAX_HEARTS; i++) hearts[i].on = true;
+}
+
+void DrawDestroyerBase()
+{
+    Vector2 destroyerBasePos = (Vector2){(float)SIM_WINDOW_SIZE_X / 2 - 64, (float)SIM_WINDOW_SIZE_Y / 2 - 64};
+    float destroyerBaseRot = (float) atan2(vMouse.y - destroyerBasePos.y, vMouse.x - destroyerBasePos.x) * RAD2DEG + 90.0f;
+    DrawTexturePro(destroyerTexture, (Rectangle){0, 0, 32, 32},
+        (Rectangle){destroyerBasePos.x + 64, destroyerBasePos.y + 64, 128, 128}, 
+        (Vector2){64, 64}, destroyerBaseRot, WHITE);
 }

@@ -5,13 +5,15 @@
 #include <string.h>
 
 #include "../headers/main/globals.h"
-#include "../headers/main/star.h"
-#include "../headers/main/destroyer.h"
-#include "../headers/main/projectile.h"
-#include "../headers/main/asteroid.h"
+#include "../headers/sprite/star.h"
+#include "../headers/sprite/destroyer.h"
+#include "../headers/sprite/projectile.h"
+#include "../headers/sprite/asteroid.h"
 #include "../headers/main/timer.h"
 #include "../headers/main/text.h"
-#include "../headers/main/heart.h"
+#include "../headers/sprite/heart.h"
+#include "../headers/screen/main_menu_screen.h"
+#include "../headers/screen/dead_screen.h"
 
 Color SUPERDARKGRAY = {15, 15, 15, 255};
 bool shouldExitGame = false;
@@ -22,6 +24,8 @@ float scale;
 RenderTexture2D target;
 bool f3On = false;
 int score = 0;
+enum Gamestate gamestate = MAIN_MENU;
+Shader shader;
 
 float min(float a, float b) {
     return a < b ? a : b;
@@ -50,6 +54,7 @@ int main(void)
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI | FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT);
     InitWindow(SIM_WINDOW_SIZE_X, SIM_WINDOW_SIZE_Y, "Beelo's Raylib Template");
     SearchAndSetResourceDir("res");
+    SetExitKey(KEY_NULL);
     
     target = LoadRenderTexture(SIM_WINDOW_SIZE_X, SIM_WINDOW_SIZE_Y);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
@@ -58,6 +63,11 @@ int main(void)
     LoadDestroyer();
     LoadAsteroid();
     LoadHeart();
+    shader = LoadShader(0, TextFormat("shader/glsl%i/crt_faded.fs", GLSL_VERSION));
+    
+    int centerLoc = GetShaderLocation(shader, "screenCenter");
+    int radiusLoc = GetShaderLocation(shader, "radius");
+    int intensityLoc = GetShaderLocation(shader, "intensity");
 
     for(int i = 0; i < MAX_STARS; i++)
     {
@@ -92,66 +102,101 @@ int main(void)
         
         if(IsKeyPressed(KEY_F3)) f3On = !f3On;
         
-        UpdateDestroyer(&destroyer);
-        
-        for(int i = 0; i < MAX_STARS; i++)
+        Vector2 screenCenter;
+        float radius;
+        float intensity;
+            
+        if(gamestate == PLAYING)
         {
-            UpdateStar(&stars[i], &destroyer);
+            screenCenter.x = (destroyer.pos.x + destroyer.size.x / 2) / SIM_WINDOW_SIZE_X;
+            screenCenter.y = 1.0f - ((destroyer.pos.y + destroyer.size.y / 2) / SIM_WINDOW_SIZE_Y);
+        } else {
+            screenCenter.x = 0.5f;
+            screenCenter.y = 0.5f;
         }
         
-        activeProjectiles = 0;
+        radius = 2.5f;
+        intensity = 1.4f;
+            
+        SetShaderValue(shader, centerLoc, &screenCenter, SHADER_UNIFORM_VEC2);
+        SetShaderValue(shader, radiusLoc, &radius, SHADER_UNIFORM_FLOAT);
+        SetShaderValue(shader, intensityLoc, &intensity, SHADER_UNIFORM_FLOAT);
         
-        for(int i = 0; i < MAX_PROJECTILES; i++)
-        {
-            if(projectiles[i].active) activeProjectiles++;
-            UpdateProjectile(&projectiles[i]);
+        
+        switch (gamestate) {
+            case PLAYING:
+            UpdateDestroyer(&destroyer);
+            
+            for(int i = 0; i < MAX_STARS; i++)
+            {
+                UpdateStar(&stars[i], &destroyer);
+            }
+            
+            activeProjectiles = 0;
+            
+            for(int i = 0; i < MAX_PROJECTILES; i++)
+            {
+                if(projectiles[i].active) activeProjectiles++;
+                UpdateProjectile(&projectiles[i]);
+            }
+            
+            activeAsteroids = 0;
+            
+            for(int i = 0; i < MAX_ASTEROIDS; i++)
+            {
+                if(asteroids[i].active) activeAsteroids++;
+                UpdateAsteroid(&asteroids[i]);
+            }
+            
+            activeHearts = 0;
+            
+            for(int i = 0; i < MAX_HEARTS; i++)
+            {
+                if(hearts[i].on) activeHearts++;
+                UpdateHeart(&hearts[i]);   
+            }
+            
+            UpdateTimer(&asteroidSpawnTimer);
+            break;
+            
+            case MAIN_MENU:
+            UpdateMainMenuScreen();
+            break;
+            
+            case DEAD:
+            UpdateDeadScreen();
+            break;
+            
+            case EXIT:
+            break;
         }
-        
-        activeAsteroids = 0;
-        
-        for(int i = 0; i < MAX_ASTEROIDS; i++)
-        {
-            if(asteroids[i].active) activeAsteroids++;
-            UpdateAsteroid(&asteroids[i]);
-        }
-        
-        activeHearts = 0;
-        
-        for(int i = 0; i < MAX_HEARTS; i++)
-        {
-            if(hearts[i].on) activeHearts++;
-            UpdateHeart(&hearts[i]);   
-        }
-        
-        UpdateTimer(&asteroidSpawnTimer);
         
         if(target.texture.id != 0) BeginTextureMode(target);
         
         ClearBackground(SUPERDARKGRAY);
         
-        for(int i = 0; i < MAX_STARS; i++)
-        {
-            DrawStar(&stars[i]);
+        switch (gamestate) {
+            case PLAYING:
+            for(int i = 0; i < MAX_STARS; i++) DrawStar(&stars[i]);
+            for(int i = 0; i < MAX_PROJECTILES; i++) DrawProjectile(&projectiles[i]);
+            for(int i = 0; i < MAX_ASTEROIDS; i++) DrawAsteroid(&asteroids[i]);
+            for(int i = 0; i < MAX_HEARTS; i++) DrawHeart(&hearts[i]); 
+            DrawDestroyer(&destroyer);
+            DrawAudiowideText(TextFormat("Score: %i", score), (Vector2){10, 10}, 32, WHITE);
+            break;
+            
+            case MAIN_MENU:
+            DrawMainMenuScreen();
+            break;
+            
+            case DEAD:
+            DrawDeadScreen();
+            break;
+            
+            case EXIT:
+            break;
         }
         
-        for(int i = 0; i < MAX_PROJECTILES; i++)
-        {
-            DrawProjectile(&projectiles[i]);
-        }
-        
-        for(int i = 0; i < MAX_ASTEROIDS; i++)
-        {
-            DrawAsteroid(&asteroids[i]);
-        }
-        
-        for(int i = 0; i < MAX_HEARTS; i++)
-        {
-            DrawHeart(&hearts[i]);   
-        }
-        
-        DrawDestroyer(&destroyer);
-        
-        DrawAudiowideText(TextFormat("Score: %i", score), (Vector2){10, 10}, 32, WHITE);
         if(f3On)
         {
             DrawAudiowideText(TextFormat("Active Projectiles: %i", activeProjectiles), (Vector2){10, 50}, 16, LIGHTGRAY);
@@ -167,9 +212,11 @@ int main(void)
         
         ClearBackground(DARKGRAY);
             
+        BeginShaderMode(shader);
         DrawTexturePro(target.texture, (Rectangle){0, 0, (float)target.texture.width, -(float)target.texture.height}, 
             (Rectangle){(windowSize.x - SIM_WINDOW_SIZE_X * scale) * 0.5f, (windowSize.y - SIM_WINDOW_SIZE_Y * scale) * 0.5f, SIM_WINDOW_SIZE_X * scale, SIM_WINDOW_SIZE_Y * scale}, 
             (Vector2){0, 0}, 0.0f, WHITE);
+        EndShaderMode();
             
         EndDrawing();
     }
@@ -178,6 +225,7 @@ int main(void)
     UnloadDestroyer();
     UnloadAsteroid();
     UnloadHeart();
+    UnloadShader(shader);
     
     CloseWindow();
 

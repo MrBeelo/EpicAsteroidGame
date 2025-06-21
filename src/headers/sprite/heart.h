@@ -3,7 +3,7 @@
 
 #include "../raylib/raylib.h"
 
-#define MAX_HEARTS 3
+#define MAX_HEARTS 5
 #define HEART_SIZE 64
 
 static Texture2D heartTexture;

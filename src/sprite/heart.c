@@ -1,4 +1,4 @@
-#include "../headers/main/heart.h"
+#include "../headers/sprite/heart.h"
 #include "../headers/main/globals.h"
 
 int activeHearts;

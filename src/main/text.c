@@ -2,7 +2,7 @@
 
 void LoadFonts()
 {
-    audiowide = LoadFont("font/audiowide.ttf");
+    audiowide = LoadFontEx("font/audiowide.ttf", 100, 0, 0);
 }
 
 void UnloadFonts()
@@ -18,4 +18,9 @@ void DrawAudiowideText(const char *text, Vector2 position, float fontSize, Color
 void DrawAudiowideTextPro(const char *text, Vector2 position, Vector2 origin, float rotation, float fontSize, float spacing, Color tint)
 {
     DrawTextPro(audiowide, text, position, origin, rotation, fontSize, spacing, tint);
+}
+
+Vector2 MeasureAudiowideText(const char *text, float fontSize)
+{
+    return MeasureTextEx(audiowide, text, fontSize, 0);
 }

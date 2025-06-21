@@ -5,6 +5,19 @@
 #define SIM_WINDOW_SIZE_X 1000
 #define SIM_WINDOW_SIZE_Y 1000
 
+#if defined(PLATFORM_WEB)
+    #define GLSL_VERSION            100
+#else
+    #define GLSL_VERSION            330
+#endif
+
+enum Gamestate {
+    PLAYING,
+    MAIN_MENU,
+    DEAD,
+    EXIT
+};
+
 extern Color SUPERDARKGRAY;
 extern bool shouldExitGame;
 extern float simDT;
@@ -13,6 +26,8 @@ extern float scale;
 extern RenderTexture2D target;
 extern bool f3On;
 extern int score;
+extern enum Gamestate gamestate;
+extern Shader shader;
 
 extern float min(float a, float b);
 extern float max(float a, float b);

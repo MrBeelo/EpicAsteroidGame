@@ -1,6 +1,6 @@
-#include "../headers/main/asteroid.h"
+#include "../headers/sprite/asteroid.h"
 #include "../headers/main/globals.h"
-#include "../headers/main/destroyer.h"
+#include "../headers/sprite/destroyer.h"
 #include <math.h>
 
 int activeAsteroids = 0;        // Define globals here

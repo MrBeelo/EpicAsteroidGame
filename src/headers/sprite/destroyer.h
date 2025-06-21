@@ -26,5 +26,7 @@ void UnloadDestroyer();
 void InitDestroyer(Destroyer* destroyer);
 void UpdateDestroyer(Destroyer* destroyer);
 void DrawDestroyer(Destroyer* destroyer);
+void ResetDestroyer(Destroyer* destroyer);
+void DrawDestroyerBase();
 
 #endif

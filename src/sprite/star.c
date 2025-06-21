@@ -1,4 +1,4 @@
-#include "../headers/main/star.h"
+#include "../headers/sprite/star.h"
 #include "../headers/main/globals.h"
 
 void InitStar(Star *star)
