@@ -14,6 +14,7 @@
 #include "../headers/sprite/heart.h"
 #include "../headers/screen/main_menu_screen.h"
 #include "../headers/screen/dead_screen.h"
+#include "../headers/sprite/powerup.h"
 
 Color SUPERDARKGRAY = {15, 15, 15, 255};
 bool shouldExitGame = false;
@@ -63,6 +64,7 @@ int main(void)
     LoadDestroyer();
     LoadAsteroid();
     LoadHeart();
+    LoadPowerup();
     shader = LoadShader(0, TextFormat("shader/glsl%i/crt_faded.fs", GLSL_VERSION));
     
     int centerLoc = GetShaderLocation(shader, "screenCenter");
@@ -89,6 +91,9 @@ int main(void)
     
     Timer asteroidSpawnTimer;
     InitTimer(&asteroidSpawnTimer, 0.5f, true, true, SummonAsteroid, &destroyer);
+    
+    Timer powerupSpawnTimer;
+    InitTimer(&powerupSpawnTimer, 20.0f, true, true, SummonPowerup, NULL);
     
     while (!WindowShouldClose() && !shouldExitGame)
     {
@@ -150,13 +155,11 @@ int main(void)
             
             activeHearts = 0;
             
-            for(int i = 0; i < MAX_HEARTS; i++)
-            {
-                if(hearts[i].on) activeHearts++;
-                UpdateHeart(&hearts[i]);   
-            }
+            for(int i = 0; i < MAX_HEARTS; i++) if(hearts[i].on) activeHearts++;  
+            for(int i = 0; i < MAX_POWERUPS; i++) UpdatePowerup(&powerups[i]);   
             
             UpdateTimer(&asteroidSpawnTimer);
+            UpdateTimer(&powerupSpawnTimer);
             break;
             
             case MAIN_MENU:
@@ -181,8 +184,10 @@ int main(void)
             for(int i = 0; i < MAX_PROJECTILES; i++) DrawProjectile(&projectiles[i]);
             for(int i = 0; i < MAX_ASTEROIDS; i++) DrawAsteroid(&asteroids[i]);
             for(int i = 0; i < MAX_HEARTS; i++) DrawHeart(&hearts[i]); 
+            for(int i = 0; i < MAX_POWERUPS; i++) DrawPowerup(&powerups[i]); 
             DrawDestroyer(&destroyer);
             DrawAudiowideText(TextFormat("Score: %i", score), (Vector2){10, 10}, 32, WHITE);
+            DrawPowerupMessage();
             break;
             
             case MAIN_MENU:
@@ -204,6 +209,8 @@ int main(void)
             DrawAudiowideText(TextFormat("Active Hearts: %i", activeHearts), (Vector2){10, 90}, 16, LIGHTGRAY);
             DrawAudiowideText(concat(TextFormat("Destroyer Position: %.0f", destroyer.pos.x), TextFormat(", %.0f", destroyer.pos.y)), (Vector2){10, 110}, 16, LIGHTGRAY);
             DrawAudiowideText(TextFormat("Immunity: %i", destroyer.immunity), (Vector2){10, 130}, 16, LIGHTGRAY);
+            DrawAudiowideText(TextFormat("Powerup Time: %.00f", powerupActiveAliveTime), (Vector2){10, 150}, 16, LIGHTGRAY);
+            DrawAudiowideText(TextFormat("Last Activated Powerup: %i", (int)lastActivatedPowerup), (Vector2){10, 170}, 16, LIGHTGRAY);
         }
         
         if(target.texture.id != 0) EndTextureMode();
@@ -226,6 +233,7 @@ int main(void)
     UnloadAsteroid();
     UnloadHeart();
     UnloadShader(shader);
+    UnloadPowerup();
     
     CloseWindow();
 

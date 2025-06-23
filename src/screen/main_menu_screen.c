@@ -7,7 +7,7 @@
 void UpdateMainMenuScreen()
 {
     if(IsKeyPressed(KEY_SPACE)) gamestate = PLAYING;
-    //if(IsKeyPressed(KEY_ESCAPE)) gamestate = EXIT;
+    if(IsKeyPressed(KEY_ESCAPE)) shouldExitGame = true;
 }
 
 void DrawMainMenuScreen()

@@ -20,7 +20,6 @@ extern Heart hearts[MAX_HEARTS];
 void LoadHeart();
 void UnloadHeart();
 void InitHeart(Heart *heart, int index);
-void UpdateHeart(Heart *heart);
 void DrawHeart(Heart *heart);
 void RemoveHeart();
 void ObtainHeart();

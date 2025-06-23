@@ -3,6 +3,7 @@
 #include "../headers/sprite/projectile.h"
 #include "../headers/sprite/asteroid.h"
 #include "../headers/sprite/heart.h"
+#include "../headers/sprite/powerup.h"
 #include <math.h>
 
 void LoadDestroyer()
@@ -29,6 +30,8 @@ void InitDestroyer(Destroyer *destroyer)
 void UpdateDestroyer(Destroyer *destroyer)
 {
     destroyer->isMoving = false;
+    destroyer->size.x = (powerupActiveAliveTime < 10.0f && lastActivatedPowerup == SIZE) ? 96 : 128;
+    destroyer->size.y = (powerupActiveAliveTime < 10.0f && lastActivatedPowerup == SIZE) ? 96 : 128;
     if(IsKeyDown(KEY_A))
     {
         if(destroyer->vel.x > -DESTROYER_SPEED) destroyer->vel.x -= DESTROYER_DRIFT * simDT;
@@ -84,6 +87,17 @@ void UpdateDestroyer(Destroyer *destroyer)
         }
     }
     
+    for(int i = 0; i < MAX_POWERUPS; i++)
+    {
+        if(powerups[i].active && CheckCollisionRecs(destroyer->hitbox, powerups[i].rect))
+        {
+            lastActivatedPowerup = powerups[i].type;
+            powerupActiveStartTime = GetTime();
+            powerups[i].active = false;
+            if(lastActivatedPowerup == HEALTH) ObtainHeart();
+        }
+    }
+    
     if(destroyer->immunity > 0) destroyer->immunity -= simDT;
     
     if(!hearts[MAX_HEARTS - 1].on)
@@ -115,6 +129,9 @@ void ResetDestroyer(Destroyer* destroyer)
     destroyer->hitbox = (Rectangle){destroyer->pos.x + DESTROYER_HITBOX_BUFFER, destroyer->pos.y + DESTROYER_HITBOX_BUFFER, destroyer->size.x - DESTROYER_HITBOX_BUFFER * 2, destroyer->size.y - DESTROYER_HITBOX_BUFFER * 2};
     
     for(int i = 0; i < MAX_HEARTS; i++) hearts[i].on = true;
+    
+    powerupActiveStartTime = GetTime();
+    lastActivatedPowerup = NOTHING;
 }
 
 void DrawDestroyerBase()
