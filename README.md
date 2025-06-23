@@ -1,1 +1,1 @@
-Simple raylib template for raylib 5.5
+A simple game I'm working on to test coding in C. Made with raylib.
