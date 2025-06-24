@@ -1,6 +1,7 @@
 #include "../headers/sprite/powerup.h"
 #include "../headers/main/globals.h"
 #include "../headers/main/text.h"
+#include "../headers/main/sounds.h"
 
 Powerup powerups[MAX_POWERUPS] = { (enum PowerupType)4, 0 };
 float powerupActiveStartTime;
@@ -89,4 +90,6 @@ void DrawPowerupMessage()
     if(lastActivatedPowerup == SCORE && powerupActiveAliveTime < 10.0f) DrawAudiowideText(scoreText, (Vector2){(float)SIM_WINDOW_SIZE_X / 2 - MeasureAudiowideText(scoreText, fontSize).x / 2, 200}, fontSize, YELLOW);
     if(lastActivatedPowerup == SIZE && powerupActiveAliveTime < 10.0f) DrawAudiowideText(sizeText, (Vector2){(float)SIM_WINDOW_SIZE_X / 2 - MeasureAudiowideText(sizeText, fontSize).x / 2, 200}, fontSize, GREEN);
     if(lastActivatedPowerup == PROJ_SPEED && powerupActiveAliveTime < 10.0f) DrawAudiowideText(projSpeedText, (Vector2){(float)SIM_WINDOW_SIZE_X / 2 - MeasureAudiowideText(projSpeedText, fontSize).x / 2, 200}, fontSize, SKYBLUE);
+    
+    if((lastActivatedPowerup == SCORE || lastActivatedPowerup == PROJ_SPEED || lastActivatedPowerup == SIZE) && powerupActiveAliveTime >= 9.9f && powerupActiveAliveTime < 10.0f) PlaySound(powerupEnd);
 }

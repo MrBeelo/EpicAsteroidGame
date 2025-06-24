@@ -2,6 +2,7 @@
 #include "../headers/main/globals.h"
 #include "../headers/sprite/asteroid.h"
 #include "../headers/sprite/powerup.h"
+#include "../headers/main/sounds.h"
 #include <math.h>
 
 int activeProjectiles = 0;
@@ -19,6 +20,7 @@ void SummonProjectile(Vector2 pos, float rot)
             projectiles[i].rot = rot;
             projectiles[i].rect = (Rectangle){projectiles[i].pos.x, projectiles[i].pos.y, projectiles[i].size.x, projectiles[i].size.y};
             projectiles[i].active = true;
+            PlaySound(laserShoot);
             break;
         }
     }
@@ -48,6 +50,7 @@ void UpdateProjectile(Projectile *projectile)
             score += (100 - asteroids[i].size) * ((powerupActiveAliveTime < 10.0f && lastActivatedPowerup == SCORE) ? 2 : 1);
             KillAsteroid(&asteroids[i]);
             KillProjectile(projectile);
+            PlaySound(asteroidHit);
         }
     }
 }

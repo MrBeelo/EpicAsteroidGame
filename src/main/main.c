@@ -15,6 +15,7 @@
 #include "../headers/screen/main_menu_screen.h"
 #include "../headers/screen/dead_screen.h"
 #include "../headers/sprite/powerup.h"
+#include "../headers/main/sounds.h"
 
 Color SUPERDARKGRAY = {15, 15, 15, 255};
 bool shouldExitGame = false;
@@ -54,6 +55,7 @@ int main(void)
 {
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI | FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT);
     InitWindow(SIM_WINDOW_SIZE_X, SIM_WINDOW_SIZE_Y, "Beelo's Raylib Template");
+    InitAudioDevice();
     SearchAndSetResourceDir("res");
     SetExitKey(KEY_NULL);
     
@@ -65,6 +67,8 @@ int main(void)
     LoadAsteroid();
     LoadHeart();
     LoadPowerup();
+    LoadSounds();
+    
     shader = LoadShader(0, TextFormat("shader/glsl%i/crt_faded.fs", GLSL_VERSION));
     
     int centerLoc = GetShaderLocation(shader, "screenCenter");
@@ -127,7 +131,6 @@ int main(void)
         SetShaderValue(shader, radiusLoc, &radius, SHADER_UNIFORM_FLOAT);
         SetShaderValue(shader, intensityLoc, &intensity, SHADER_UNIFORM_FLOAT);
         
-        
         switch (gamestate) {
             case PLAYING:
             UpdateDestroyer(&destroyer);
@@ -173,6 +176,8 @@ int main(void)
             case EXIT:
             break;
         }
+        
+        ManageMusic();
         
         if(target.texture.id != 0) BeginTextureMode(target);
         
@@ -232,9 +237,11 @@ int main(void)
     UnloadDestroyer();
     UnloadAsteroid();
     UnloadHeart();
-    UnloadShader(shader);
     UnloadPowerup();
+    UnloadSounds();
+    UnloadShader(shader);
     
+    CloseAudioDevice();
     CloseWindow();
 
     return 0;

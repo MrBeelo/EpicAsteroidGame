@@ -1,5 +1,5 @@
-#ifndef FONT_H
-#define FONT_H
+#ifndef TEXT_H
+#define TEXT_H
 
 #include "../raylib/raylib.h"
 

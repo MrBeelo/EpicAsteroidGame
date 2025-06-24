@@ -25,5 +25,13 @@ void DrawMainMenuScreen()
     const int creditsTextFontSize = 24;
     DrawAudiowideText(creditsText, (Vector2){(float)SIM_WINDOW_SIZE_X - MeasureAudiowideText(creditsText, creditsTextFontSize).x - 10, (float)SIM_WINDOW_SIZE_Y - MeasureAudiowideText(creditsText, creditsTextFontSize).y - 10}, creditsTextFontSize, (Color){255, 255, 255, 150});
     
+    const char *musicText1 = "\"Space Fighter Loop\" Kevin MacLeod (incompetech.com)";
+    const char *musicText2 = "Licensed under Creative Commons: By Attribution 4.0 License";
+    const char *musicText3 = "http://creativecommons.org/licenses/by/4.0/";
+    const int musicTextFontSize = 16;
+    DrawAudiowideText(musicText1, (Vector2){10, SIM_WINDOW_SIZE_Y - musicTextFontSize * 3 - 10}, musicTextFontSize, (Color){255, 255, 255, 150});
+    DrawAudiowideText(musicText2, (Vector2){10, SIM_WINDOW_SIZE_Y - musicTextFontSize * 2 - 10}, musicTextFontSize, (Color){255, 255, 255, 150});
+    DrawAudiowideText(musicText3, (Vector2){10, SIM_WINDOW_SIZE_Y - musicTextFontSize - 10}, musicTextFontSize, (Color){255, 255, 255, 150});
+    
     DrawDestroyerBase();
 }

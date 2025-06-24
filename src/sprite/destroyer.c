@@ -4,6 +4,7 @@
 #include "../headers/sprite/asteroid.h"
 #include "../headers/sprite/heart.h"
 #include "../headers/sprite/powerup.h"
+#include "../headers/main/sounds.h"
 #include <math.h>
 
 void LoadDestroyer()
@@ -84,6 +85,8 @@ void UpdateDestroyer(Destroyer *destroyer)
         {
             destroyer->immunity = 300;
             RemoveHeart();
+            destroyer->vel = (Vector2){-destroyer->vel.x, -destroyer->vel.y};
+            PlaySound(destroyerHit);
         }
     }
     
@@ -95,6 +98,7 @@ void UpdateDestroyer(Destroyer *destroyer)
             powerupActiveStartTime = GetTime();
             powerups[i].active = false;
             if(lastActivatedPowerup == HEALTH) ObtainHeart();
+            PlaySound(powerupStart);
         }
     }
     
