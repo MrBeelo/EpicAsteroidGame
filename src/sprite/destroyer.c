@@ -5,6 +5,7 @@
 #include "../headers/sprite/heart.h"
 #include "../headers/sprite/powerup.h"
 #include "../headers/main/sounds.h"
+#include "../headers/main/text.h"
 #include <math.h>
 
 void LoadDestroyer()
@@ -108,6 +109,8 @@ void UpdateDestroyer(Destroyer *destroyer)
     {
         gamestate = DEAD;
         ResetDestroyer(destroyer);
+        if(score > GetHighScore()) SaveHighScore(score);
+        localHighScore = GetHighScore();
     }
 }
 
@@ -121,6 +124,14 @@ void DrawDestroyer(Destroyer *destroyer)
         (Vector2){destroyer->size.x / 2, destroyer->size.y / 2}, destroyer->rot, destroyerColor);
     if(f3On) DrawRectangleLinesEx(destroyer->rect, 4, ORANGE);
     if(f3On) DrawRectangleLinesEx(destroyer->hitbox, 4, YELLOW);
+    
+    if(!hearts[MAX_HEARTS - 2].on)
+    {
+        const char *warningText = "WARNING: LOW HEALTH";
+        const int warningTextFontSize = 48;
+        Color warningTextColor = ColorLerp(RED, (Color){230, 41, 55, 100}, (sin(GetTime() * 5) + 1) / 2);
+        DrawAudiowideText(warningText, (Vector2){(float)SIM_WINDOW_SIZE_X / 2 - MeasureAudiowideText(warningText, warningTextFontSize).x / 2, SIM_WINDOW_SIZE_Y - 200}, warningTextFontSize, warningTextColor);
+    }
 }
 
 void ResetDestroyer(Destroyer* destroyer)

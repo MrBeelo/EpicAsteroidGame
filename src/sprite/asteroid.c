@@ -3,7 +3,7 @@
 #include "../headers/sprite/destroyer.h"
 #include <math.h>
 
-int activeAsteroids = 0;        // Define globals here
+int activeAsteroids = 0;
 Asteroid asteroids[MAX_ASTEROIDS] = { 0 };
 
 void LoadAsteroid()
@@ -25,7 +25,7 @@ void SummonAsteroid(void* context)
         if(!asteroids[i].active)
         {
             asteroids[i].rot = GetRandomValue(0, 360);
-            asteroids[i].speed = GetRandomValue(2, 6);
+            asteroids[i].speed = GetRandomValue(2, 6) + gamePlayedTime / 50;
             asteroids[i].rotSpeeed = GetRandomValue(2, 7);
             asteroids[i].size = GetRandomValue(25, 70);
             asteroids[i].vel = (Vector2){cos((asteroids[i].rot * DEG2RAD) - (PI / 2)) * asteroids[i].speed, sin((asteroids[i].rot * DEG2RAD) - (PI / 2)) * asteroids[i].speed};

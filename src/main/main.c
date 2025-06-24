@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "../headers/main/globals.h"
 #include "../headers/sprite/star.h"
@@ -28,6 +29,9 @@ bool f3On = false;
 int score = 0;
 enum Gamestate gamestate = MAIN_MENU;
 Shader shader;
+float gameStartTime;
+float gamePlayedTime;
+int localHighScore;
 
 float min(float a, float b) {
     return a < b ? a : b;
@@ -50,6 +54,30 @@ char* concat(const char *s1, const char *s2)
     return result;
 }
 
+void PlayGame()
+{
+    gamestate = PLAYING;
+    gameStartTime = GetTime();
+}
+
+void SaveHighScore(int highscore)
+{
+    FILE *file = fopen("data.eag", "w");
+    if (file == NULL) TraceLog(LOG_ERROR, "Error opening savefile");
+    fprintf(file, "%d\n", highscore);
+    fclose(file);
+}
+
+int GetHighScore()
+{
+    int highscore;
+    FILE *file = fopen("data.eag", "r");
+    if (file == NULL) TraceLog(LOG_ERROR, "Error opening savefile");
+    fscanf(file, "%d", &highscore);
+    fclose(file);
+    return highscore;
+}
+
 
 int main(void)
 {
@@ -68,8 +96,10 @@ int main(void)
     LoadHeart();
     LoadPowerup();
     LoadSounds();
-    
     shader = LoadShader(0, TextFormat("shader/glsl%i/crt_faded.fs", GLSL_VERSION));
+    
+    if(!FileExists("data.eag")) SaveHighScore(0);
+    localHighScore = GetHighScore();
     
     int centerLoc = GetShaderLocation(shader, "screenCenter");
     int radiusLoc = GetShaderLocation(shader, "radius");
@@ -101,6 +131,8 @@ int main(void)
     
     while (!WindowShouldClose() && !shouldExitGame)
     {
+        gamePlayedTime = GetTime() - gameStartTime;
+        
         windowSize = (Vector2){(float) GetScreenWidth(), (float) GetScreenHeight()};
         simDT = GetFrameTime() * 60;
         
@@ -212,17 +244,18 @@ int main(void)
             DrawAudiowideText(TextFormat("Active Projectiles: %i", activeProjectiles), (Vector2){10, 50}, 16, LIGHTGRAY);
             DrawAudiowideText(TextFormat("Active Asteroids: %i", activeAsteroids), (Vector2){10, 70}, 16, LIGHTGRAY);
             DrawAudiowideText(TextFormat("Active Hearts: %i", activeHearts), (Vector2){10, 90}, 16, LIGHTGRAY);
-            DrawAudiowideText(concat(TextFormat("Destroyer Position: %.0f", destroyer.pos.x), TextFormat(", %.0f", destroyer.pos.y)), (Vector2){10, 110}, 16, LIGHTGRAY);
+            DrawAudiowideText(concat(TextFormat("Destroyer Position: %.1f", destroyer.pos.x), TextFormat(", %.1f", destroyer.pos.y)), (Vector2){10, 110}, 16, LIGHTGRAY);
             DrawAudiowideText(TextFormat("Immunity: %i", destroyer.immunity), (Vector2){10, 130}, 16, LIGHTGRAY);
-            DrawAudiowideText(TextFormat("Powerup Time: %.00f", powerupActiveAliveTime), (Vector2){10, 150}, 16, LIGHTGRAY);
-            DrawAudiowideText(TextFormat("Last Activated Powerup: %i", (int)lastActivatedPowerup), (Vector2){10, 170}, 16, LIGHTGRAY);
+            DrawAudiowideText(TextFormat("Last Activated Powerup: %i", (int)lastActivatedPowerup), (Vector2){10, 150}, 16, LIGHTGRAY);
+            DrawAudiowideText(TextFormat("Asteroid Bonus Speed: %.2f", gamePlayedTime / 50), (Vector2){10, 170}, 16, LIGHTGRAY);
+            DrawAudiowideText(TextFormat("Time Played: %.1f", gamePlayedTime), (Vector2){10, 190}, 16, LIGHTGRAY);
         }
         
         if(target.texture.id != 0) EndTextureMode();
         
         BeginDrawing();
         
-        ClearBackground(DARKGRAY);
+        ClearBackground((Color){30, 30, 30, 255});
             
         BeginShaderMode(shader);
         DrawTexturePro(target.texture, (Rectangle){0, 0, (float)target.texture.width, -(float)target.texture.height}, 

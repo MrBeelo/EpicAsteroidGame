@@ -28,8 +28,15 @@ extern bool f3On;
 extern int score;
 extern enum Gamestate gamestate;
 extern Shader shader;
+extern float gameStartTime;
+extern float gamePlayedTime;
+extern int localHighScore;
 
 extern float min(float a, float b);
 extern float max(float a, float b);
 extern float clamp(float x, float low, float high);
 extern char* concat(const char *s1, const char *s2);
+
+extern void PlayGame();
+extern void SaveHighScore(int highscore);
+extern int GetHighScore();

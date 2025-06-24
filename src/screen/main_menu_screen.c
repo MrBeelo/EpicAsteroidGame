@@ -6,7 +6,7 @@
 
 void UpdateMainMenuScreen()
 {
-    if(IsKeyPressed(KEY_SPACE)) gamestate = PLAYING;
+    if(IsKeyPressed(KEY_SPACE)) PlayGame();
     if(IsKeyPressed(KEY_ESCAPE)) shouldExitGame = true;
 }
 
@@ -15,6 +15,10 @@ void DrawMainMenuScreen()
     const char *titleText = "EPIC ASTEROID GAME";
     const int titleTextFontSize = 64;
     DrawAudiowideText(titleText, (Vector2){(float)SIM_WINDOW_SIZE_X / 2 - MeasureAudiowideText(titleText, titleTextFontSize).x / 2, 100}, titleTextFontSize, WHITE);
+    
+    const char *highScoreText = TextFormat("High Score: %i", localHighScore);
+    const int highScoreTextFontSize = 24;
+    if(localHighScore > 0) DrawAudiowideText(highScoreText, (Vector2){(float)SIM_WINDOW_SIZE_X / 2 - MeasureAudiowideText(highScoreText, highScoreTextFontSize).x / 2, 170}, highScoreTextFontSize, WHITE);
     
     const char *playText = "Press space to play!";
     const int playTextFontSize = 32;

@@ -3,7 +3,6 @@
 
 #include "../raylib/raylib.h"
 
-#define ASTEROID_SPEED 5
 #define MAX_ASTEROIDS 20
 
 static Texture2D asteroidTexture;
