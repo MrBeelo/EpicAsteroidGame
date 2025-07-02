@@ -109,7 +109,6 @@ int main(void)
     projectiles = NewVector(sizeof(Projectile));
 
     for(int i = 0; i < MAX_STARS; i++) SummonStar();
-    
     for(int i = 0; i < MAX_HEARTS; i++) SummonHeart(i);   
     
     Destroyer destroyer;
@@ -173,7 +172,8 @@ int main(void)
                 if(heartVal->on) activeHearts++; 
             }
             
-            for(int i = 0; i < MAX_POWERUPS; i++) UpdatePowerup(&powerups[i]);   
+            powerupActiveAliveTime = GetTime() - powerupActiveStartTime;
+            for(int i = 0; i < powerups.len; i++) UpdatePowerup((Powerup*)VectorGet(&powerups, i));   
             
             UpdateTimer(&asteroidSpawnTimer);
             UpdateTimer(&powerupSpawnTimer);
@@ -200,7 +200,7 @@ int main(void)
             for(int i = 0; i < projectiles.len; i++) DrawProjectile((Projectile*)VectorGet(&projectiles, i));
             for(int i = 0; i < asteroids.len; i++) DrawAsteroid((Asteroid*)VectorGet(&asteroids, i));
             for(int i = 0; i < hearts.len; i++) DrawHeart((Heart*)VectorGet(&hearts, i)); 
-            for(int i = 0; i < MAX_POWERUPS; i++) DrawPowerup(&powerups[i]); 
+            for(int i = 0; i < powerups.len; i++) DrawPowerup((Powerup*)VectorGet(&powerups, i)); 
             DrawDestroyer(&destroyer);
             DrawAudiowideText(TextFormat("Score: %i", score), (Vector2){10, 10}, 32, WHITE);
             DrawPowerupMessage();
@@ -225,6 +225,7 @@ int main(void)
             DrawAudiowideText(TextFormat("Last Activated Powerup: %i", (int)lastActivatedPowerup), (Vector2){10, 150}, 16, LIGHTGRAY);
             DrawAudiowideText(TextFormat("Asteroid Bonus Speed: %.2f", gamePlayedTime / 50), (Vector2){10, 170}, 16, LIGHTGRAY);
             DrawAudiowideText(TextFormat("Time Played: %.1f", gamePlayedTime), (Vector2){10, 190}, 16, LIGHTGRAY);
+            DrawAudiowideText(TextFormat("Powerup Active Alive Time: %.1f", powerupActiveAliveTime), (Vector2){10, 210}, 16, LIGHTGRAY);
         }
         
         if(target.texture.id != 0) EndTextureMode();

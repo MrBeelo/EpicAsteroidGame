@@ -3,7 +3,7 @@
 #include "../headers/main/text.h"
 #include "../headers/main/sounds.h"
 
-Powerup powerups[MAX_POWERUPS] = { (enum PowerupType)4, 0 };
+Vector powerups;
 float powerupActiveStartTime;
 float powerupActiveAliveTime;
 enum PowerupType lastActivatedPowerup = NOTHING;
@@ -15,6 +15,7 @@ void LoadPowerup()
     projSpeedPowerupTexture = LoadTexture("sprite/powerup/projspeed_powerup.png");
     sizePowerupTexture = LoadTexture("sprite/powerup/size_powerup.png");
     nothingPowerupTexture = LoadTexture("sprite/powerup/powerup.png");
+    powerups = NewVector(sizeof(Powerup));
 }
 
 void UnloadPowerup()
@@ -24,34 +25,25 @@ void UnloadPowerup()
     UnloadTexture(projSpeedPowerupTexture);
     UnloadTexture(sizePowerupTexture);
     UnloadTexture(nothingPowerupTexture);
+    DeleteVector(&powerups);
 }
 
 void SummonPowerup(void* context)
 {
     (void)context;
-    for(int i = 0; i < MAX_POWERUPS; i++)
-    {
-        if(!powerups[i].active)
-        {
-            powerups[i].pos = (Vector2){(float)GetRandomValue(0, SIM_WINDOW_SIZE_X - POWERUP_SIZE), (float)GetRandomValue(0, SIM_WINDOW_SIZE_Y - POWERUP_SIZE)};
-            powerups[i].rect = (Rectangle){powerups[i].pos.x, powerups[i].pos.y, POWERUP_SIZE, POWERUP_SIZE};
-            powerups[i].active = true;
-            powerups[i].type = (enum PowerupType)(GetRandomValue(0, 3));
-            powerups[i].startTime = GetTime();
-            powerups[i].aliveTime = 0.0f;
-            break;
-        }
-    }
+    Vector2 powerupPos = (Vector2){(float)GetRandomValue(0, SIM_WINDOW_SIZE_X - POWERUP_SIZE), (float)GetRandomValue(0, SIM_WINDOW_SIZE_Y - POWERUP_SIZE)};
+    Rectangle powerupRect = (Rectangle){powerupPos.x, powerupPos.y, POWERUP_SIZE, POWERUP_SIZE};
+    enum PowerupType powerupType = (enum PowerupType)(GetRandomValue(0, 3));
+    float powerupStartTime = GetTime();
+    float powerupAliveTime = 0.0f;
+    Powerup powerup = (Powerup){powerupType, powerupPos, powerupRect, powerupStartTime, powerupAliveTime};
+    VectorPushBack(&powerups, powerup);
 }
 
 void UpdatePowerup(Powerup* powerup)
 {
-    powerupActiveAliveTime = GetTime() - powerupActiveStartTime;
-    if(powerup->active)
-    {
-        powerup->aliveTime = GetTime() - powerup->startTime;
-        if(powerup->aliveTime > 10.0f) KillPowerup(powerup);
-    }
+    powerup->aliveTime = GetTime() - powerup->startTime;
+    if(powerup->aliveTime > 10.0f) VectorPop(&powerups); //ONLY BECAUSE THERE IS CONSTANTLY ONLY ONE ACTIVE POWERUP
 }
 
 void DrawPowerup(Powerup* powerup)
@@ -66,16 +58,8 @@ void DrawPowerup(Powerup* powerup)
         case NOTHING: texture = nothingPowerupTexture; break;
     }
     
-    if(powerup->active)
-    {
-        DrawTexturePro(texture, (Rectangle){0, 0, 32, 32}, powerup->rect, (Vector2){0, 0}, 0.0f, WHITE);
-        if(f3On) DrawRectangleLinesEx(powerup->rect, 4, GREEN);
-    }
-}
-
-void KillPowerup(Powerup* Powerup)
-{
-    Powerup->active = false;
+    DrawTexturePro(texture, (Rectangle){0, 0, 32, 32}, powerup->rect, (Vector2){0, 0}, 0.0f, WHITE);
+    if(f3On) DrawRectangleLinesEx(powerup->rect, 4, GREEN);
 }
 
 void DrawPowerupMessage()

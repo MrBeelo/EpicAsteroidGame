@@ -92,13 +92,14 @@ void UpdateDestroyer(Destroyer *destroyer)
         }
     }
     
-    for(int i = 0; i < MAX_POWERUPS; i++)
+    for(int i = 0; i < powerups.len; i++)
     {
-        if(powerups[i].active && CheckCollisionRecs(destroyer->hitbox, powerups[i].rect))
+        Powerup* powerupVal = (Powerup*)VectorGet(&powerups, i);
+        if(CheckCollisionRecs(destroyer->hitbox, powerupVal->rect))
         {
-            lastActivatedPowerup = powerups[i].type;
+            lastActivatedPowerup = powerupVal->type;
             powerupActiveStartTime = GetTime();
-            powerups[i].active = false;
+            VectorPop(&powerups);
             if(lastActivatedPowerup == HEALTH) ObtainHeart();
             PlaySound(powerupStart);
         }
