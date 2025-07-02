@@ -2,26 +2,26 @@
 #define PROJECTILE_H
 
 #include "../raylib/raylib.h"
+#include "../main/vector.h"
 
-#define MAX_PROJECTILES 10
+#define MAX_PROJECTILES 5
+#define PROJECTILE_SIZE_X 4
+#define PROJECTILE_SIZE_Y 24
 
 typedef struct Projectile
 {
 	Vector2 pos;
-	Vector2 size;
 	Vector2 vel;
 	float rot;
 	Rectangle rect;
-	bool active;
 	float speed;
 } Projectile;
 
 extern int activeProjectiles;
-extern Projectile projectiles[MAX_PROJECTILES];
+//extern Projectile projectiles[MAX_PROJECTILES];
+extern Vector projectiles;
 
 void SummonProjectile(Vector2 pos, float rot);
-void KillProjectile(Projectile *projectile);
-void InitProjectile(Projectile *projectile);
 void UpdateProjectile(Projectile *projectile);
 void DrawProjectile(Projectile *projectile);
 

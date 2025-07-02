@@ -6,64 +6,42 @@
 #include <math.h>
 
 int activeProjectiles = 0;
-Projectile projectiles[MAX_PROJECTILES] = { 0 };
+//Projectile projectiles[MAX_PROJECTILES] = { 0 };
+Vector projectiles;
 
 void SummonProjectile(Vector2 pos, float rot)
 {
-    for(int i = 0; i < MAX_PROJECTILES; i++)
-    {
-        if(!projectiles[i].active)
-        {
-            projectiles[i].speed = (powerupActiveAliveTime < 10.0f && lastActivatedPowerup == PROJ_SPEED) ? 30 : 15;
-            projectiles[i].pos = pos;
-            projectiles[i].vel = (Vector2){cos((rot * DEG2RAD) - (PI / 2)) * projectiles[i].speed, sin((rot * DEG2RAD) - (PI / 2)) * projectiles[i].speed};
-            projectiles[i].rot = rot;
-            projectiles[i].rect = (Rectangle){projectiles[i].pos.x, projectiles[i].pos.y, projectiles[i].size.x, projectiles[i].size.y};
-            projectiles[i].active = true;
-            PlaySound(laserShoot);
-            break;
-        }
-    }
-}
-
-void KillProjectile(Projectile *projectile)
-{
-    projectile->active = false;
-}
-
-void InitProjectile(Projectile *projectile)
-{
-    projectile->size = (Vector2){4, 24};
-    projectile->active = false;
+    float projectileSpeed = (powerupActiveAliveTime < 10.0f && lastActivatedPowerup == PROJ_SPEED) ? 30 : 15;
+    Vector2 projectilePos = pos;
+    Vector2 projectileVel = (Vector2){cos((rot * DEG2RAD) - (PI / 2)) * projectileSpeed, sin((rot * DEG2RAD) - (PI / 2)) * projectileSpeed};
+    float projectileRot = rot;
+    Rectangle projectileRect = (Rectangle){projectilePos.x, projectilePos.y, PROJECTILE_SIZE_X, PROJECTILE_SIZE_Y};
+    PlaySound(laserShoot);
+    Projectile projectile = (Projectile){projectilePos, projectileVel, projectileRot, projectileRect, projectileSpeed};
+    VectorPushBack(&projectiles, projectile);
 }
 
 void UpdateProjectile(Projectile *projectile)
 {
-    if(projectile->active)
+    projectile->pos.x += projectile->vel.x * simDT;
+    projectile->pos.y += projectile->vel.y * simDT;
+    //if(projectile->pos.x > SIM_WINDOW_SIZE_X + 10 || projectile->pos.x < -10 || projectile->pos.y > SIM_WINDOW_SIZE_Y + -10 || projectile->pos.y < 10) KillProjectile(projectile);
+    if(projectiles.len > MAX_PROJECTILES) VectorRemoveAt(&projectiles, 0);
+    projectile->rect = (Rectangle){projectile->pos.x, projectile->pos.y, PROJECTILE_SIZE_X, PROJECTILE_SIZE_Y};
+    
+    for(int i = 0; i < asteroids.len; i++) 
     {
-        projectile->pos.x += projectile->vel.x * simDT;
-        projectile->pos.y += projectile->vel.y * simDT;
-        if(projectile->pos.x > SIM_WINDOW_SIZE_X + 10 || projectile->pos.x < -10 || projectile->pos.y > SIM_WINDOW_SIZE_Y + -10 || projectile->pos.y < 10) KillProjectile(projectile);
-        projectile->rect = (Rectangle){projectile->pos.x, projectile->pos.y, projectile->size.x, projectile->size.y};
-        
-        for(int i = 0; i < asteroids.len; i++) 
-        {
-            Asteroid* asteroidVal = (Asteroid*)VectorGet(&asteroids, i);
-            if(CheckCollisionRecs(projectile->rect, asteroidVal->rect)) {
-                score += (100 - asteroidVal->size) * ((powerupActiveAliveTime < 10.0f && lastActivatedPowerup == SCORE) ? 2 : 1);
-                VectorRemoveAt(&asteroids, i);
-                KillProjectile(projectile);
-                PlaySound(asteroidHit);
-            }
+        Asteroid* asteroidVal = (Asteroid*)VectorGet(&asteroids, i);
+        if(CheckCollisionRecs(projectile->rect, asteroidVal->rect)) {
+            score += (100 - asteroidVal->size) * ((powerupActiveAliveTime < 10.0f && lastActivatedPowerup == SCORE) ? 2 : 1);
+            VectorRemoveAt(&asteroids, i);
+            PlaySound(asteroidHit);
         }
     }
 }
 
 void DrawProjectile(Projectile *projectile)
 {
-    if(projectile->active)
-    {
-        DrawRectanglePro((Rectangle){projectile->pos.x, projectile->pos.y, projectile->size.x, projectile->size.y}, 
-            (Vector2){projectile->size.x / 2, projectile->size.y / 2}, projectile->rot, BLUE);
-    }
+    DrawRectanglePro((Rectangle){projectile->pos.x, projectile->pos.y, PROJECTILE_SIZE_X, PROJECTILE_SIZE_Y}, 
+        (Vector2){(float)PROJECTILE_SIZE_X / 2, (float)PROJECTILE_SIZE_Y / 2}, projectile->rot, BLUE);
 }

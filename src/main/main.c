@@ -106,15 +106,11 @@ int main(void)
     int intensityLoc = GetShaderLocation(shader, "intensity");
     
     stars = NewVector(sizeof(Star));
+    projectiles = NewVector(sizeof(Projectile));
 
     for(int i = 0; i < MAX_STARS; i++)
     {
         SummonStar();
-    }
-    
-    for(int i = 0; i < MAX_PROJECTILES; i++)
-    {
-        InitProjectile(&projectiles[i]);   
     }
     
     for(int i = 0; i < MAX_HEARTS; i++)
@@ -171,13 +167,8 @@ int main(void)
             
             for(int i = 0; i < stars.len; i++) UpdateStar((Star*)VectorGet(&stars, i), &destroyer);
             
-            activeProjectiles = 0;
-            
-            for(int i = 0; i < MAX_PROJECTILES; i++)
-            {
-                if(projectiles[i].active) activeProjectiles++;
-                UpdateProjectile(&projectiles[i]);
-            }
+            activeProjectiles = projectiles.len;
+            for(int i = 0; i < projectiles.len; i++) UpdateProjectile((Projectile*)VectorGet(&projectiles, i));
             
             activeAsteroids = asteroids.len;
             for(int i = 0; i < asteroids.len; i++) UpdateAsteroid((Asteroid*)VectorGet(&asteroids, i));
@@ -211,8 +202,8 @@ int main(void)
         
         switch (gamestate) {
             case PLAYING:
-            for(int i = 0; i < MAX_STARS; i++) DrawStar((Star*)VectorGet(&stars, i));
-            for(int i = 0; i < MAX_PROJECTILES; i++) DrawProjectile(&projectiles[i]);
+            for(int i = 0; i < stars.len; i++) DrawStar((Star*)VectorGet(&stars, i));
+            for(int i = 0; i < projectiles.len; i++) DrawProjectile((Projectile*)VectorGet(&projectiles, i));
             for(int i = 0; i < asteroids.len; i++) DrawAsteroid((Asteroid*)VectorGet(&asteroids, i));
             for(int i = 0; i < MAX_HEARTS; i++) DrawHeart(&hearts[i]); 
             for(int i = 0; i < MAX_POWERUPS; i++) DrawPowerup(&powerups[i]); 
@@ -269,6 +260,7 @@ int main(void)
     UnloadShader(shader);
     
     DeleteVector(&stars);
+    DeleteVector(&projectiles);
     
     CloseAudioDevice();
     CloseWindow();
