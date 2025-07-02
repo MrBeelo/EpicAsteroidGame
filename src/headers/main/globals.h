@@ -14,8 +14,7 @@
 enum Gamestate {
     PLAYING,
     MAIN_MENU,
-    DEAD,
-    EXIT
+    DEAD
 };
 
 extern Color SUPERDARKGRAY;

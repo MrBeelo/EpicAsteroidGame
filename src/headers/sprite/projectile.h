@@ -18,7 +18,6 @@ typedef struct Projectile
 } Projectile;
 
 extern int activeProjectiles;
-//extern Projectile projectiles[MAX_PROJECTILES];
 extern Vector projectiles;
 
 void SummonProjectile(Vector2 pos, float rot);

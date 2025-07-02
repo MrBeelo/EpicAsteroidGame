@@ -106,7 +106,8 @@ void UpdateDestroyer(Destroyer *destroyer)
     
     if(destroyer->immunity > 0) destroyer->immunity -= simDT;
     
-    if(!hearts[MAX_HEARTS - 1].on)
+    Heart* lastHeart = (Heart*)VectorGet(&hearts, hearts.len - 1);
+    if(!lastHeart->on)
     {
         gamestate = DEAD;
         ResetDestroyer(destroyer);
@@ -126,7 +127,8 @@ void DrawDestroyer(Destroyer *destroyer)
     if(f3On) DrawRectangleLinesEx(destroyer->rect, 4, ORANGE);
     if(f3On) DrawRectangleLinesEx(destroyer->hitbox, 4, YELLOW);
     
-    if(!hearts[MAX_HEARTS - 2].on)
+    Heart* secondLastHeart = (Heart*)VectorGet(&hearts, hearts.len - 2);
+    if(!secondLastHeart->on)
     {
         const char *warningText = "WARNING: LOW HEALTH";
         const int warningTextFontSize = 48;
@@ -144,7 +146,11 @@ void ResetDestroyer(Destroyer* destroyer)
     destroyer->rect = (Rectangle){destroyer->pos.x, destroyer->pos.y, destroyer->size.x, destroyer->size.y};
     destroyer->hitbox = (Rectangle){destroyer->pos.x + DESTROYER_HITBOX_BUFFER, destroyer->pos.y + DESTROYER_HITBOX_BUFFER, destroyer->size.x - DESTROYER_HITBOX_BUFFER * 2, destroyer->size.y - DESTROYER_HITBOX_BUFFER * 2};
     
-    for(int i = 0; i < MAX_HEARTS; i++) hearts[i].on = true;
+    for(int i = 0; i < MAX_HEARTS; i++) 
+    {
+        Heart* heartVal = (Heart*)VectorGet(&hearts, i);
+        heartVal->on = true;
+    }
     
     powerupActiveStartTime = GetTime();
     lastActivatedPowerup = NOTHING;

@@ -6,7 +6,6 @@
 #include <math.h>
 
 int activeProjectiles = 0;
-//Projectile projectiles[MAX_PROJECTILES] = { 0 };
 Vector projectiles;
 
 void SummonProjectile(Vector2 pos, float rot)
@@ -25,7 +24,6 @@ void UpdateProjectile(Projectile *projectile)
 {
     projectile->pos.x += projectile->vel.x * simDT;
     projectile->pos.y += projectile->vel.y * simDT;
-    //if(projectile->pos.x > SIM_WINDOW_SIZE_X + 10 || projectile->pos.x < -10 || projectile->pos.y > SIM_WINDOW_SIZE_Y + -10 || projectile->pos.y < 10) KillProjectile(projectile);
     if(projectiles.len > MAX_PROJECTILES) VectorRemoveAt(&projectiles, 0);
     projectile->rect = (Rectangle){projectile->pos.x, projectile->pos.y, PROJECTILE_SIZE_X, PROJECTILE_SIZE_Y};
     

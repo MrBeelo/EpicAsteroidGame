@@ -2,6 +2,7 @@
 #define HEART_H
 
 #include "../raylib/raylib.h"
+#include "../main/vector.h"
 
 #define MAX_HEARTS 5
 #define HEART_SIZE 64
@@ -15,11 +16,11 @@ typedef struct Heart
 } Heart;
 
 extern int activeHearts;
-extern Heart hearts[MAX_HEARTS];
+extern Vector hearts;
 
 void LoadHeart();
 void UnloadHeart();
-void InitHeart(Heart *heart, int index);
+void SummonHeart(int index);
 void DrawHeart(Heart *heart);
 void RemoveHeart();
 void ObtainHeart();

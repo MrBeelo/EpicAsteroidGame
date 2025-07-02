@@ -108,15 +108,9 @@ int main(void)
     stars = NewVector(sizeof(Star));
     projectiles = NewVector(sizeof(Projectile));
 
-    for(int i = 0; i < MAX_STARS; i++)
-    {
-        SummonStar();
-    }
+    for(int i = 0; i < MAX_STARS; i++) SummonStar();
     
-    for(int i = 0; i < MAX_HEARTS; i++)
-    {
-        InitHeart(&hearts[i], i);   
-    }
+    for(int i = 0; i < MAX_HEARTS; i++) SummonHeart(i);   
     
     Destroyer destroyer;
     InitDestroyer(&destroyer);
@@ -174,8 +168,11 @@ int main(void)
             for(int i = 0; i < asteroids.len; i++) UpdateAsteroid((Asteroid*)VectorGet(&asteroids, i));
             
             activeHearts = 0;
+            for(int i = 0; i < hearts.len; i++) {
+                Heart* heartVal =(Heart*)VectorGet(&hearts, i);
+                if(heartVal->on) activeHearts++; 
+            }
             
-            for(int i = 0; i < MAX_HEARTS; i++) if(hearts[i].on) activeHearts++;  
             for(int i = 0; i < MAX_POWERUPS; i++) UpdatePowerup(&powerups[i]);   
             
             UpdateTimer(&asteroidSpawnTimer);
@@ -188,9 +185,6 @@ int main(void)
             
             case DEAD:
             UpdateDeadScreen();
-            break;
-            
-            case EXIT:
             break;
         }
         
@@ -205,7 +199,7 @@ int main(void)
             for(int i = 0; i < stars.len; i++) DrawStar((Star*)VectorGet(&stars, i));
             for(int i = 0; i < projectiles.len; i++) DrawProjectile((Projectile*)VectorGet(&projectiles, i));
             for(int i = 0; i < asteroids.len; i++) DrawAsteroid((Asteroid*)VectorGet(&asteroids, i));
-            for(int i = 0; i < MAX_HEARTS; i++) DrawHeart(&hearts[i]); 
+            for(int i = 0; i < hearts.len; i++) DrawHeart((Heart*)VectorGet(&hearts, i)); 
             for(int i = 0; i < MAX_POWERUPS; i++) DrawPowerup(&powerups[i]); 
             DrawDestroyer(&destroyer);
             DrawAudiowideText(TextFormat("Score: %i", score), (Vector2){10, 10}, 32, WHITE);
@@ -218,9 +212,6 @@ int main(void)
             
             case DEAD:
             DrawDeadScreen();
-            break;
-            
-            case EXIT:
             break;
         }
         

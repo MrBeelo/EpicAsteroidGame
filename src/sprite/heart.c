@@ -2,22 +2,24 @@
 #include "../headers/main/globals.h"
 
 int activeHearts;
-Heart hearts[MAX_HEARTS] = { 0 };
+Vector hearts;
 
 void LoadHeart()
 {
     heartTexture = LoadTexture("sprite/heart.png");
+    hearts = NewVector(sizeof(Heart));
 }
 
 void UnloadHeart()
 {
     UnloadTexture(heartTexture);
+    DeleteVector(&hearts);
 }
 
-void InitHeart(Heart *heart, int index)
+void SummonHeart(int index)
 {
-    heart->on = true;
-    heart->index = index;
+    Heart heart = (Heart){index, true};
+    VectorPushBack(&hearts, heart);
 }
 
 void DrawHeart(Heart *heart)
@@ -27,11 +29,12 @@ void DrawHeart(Heart *heart)
 
 void RemoveHeart()
 {
-    for(int i = 0; i < MAX_HEARTS; i++)
+    for(int i = 0; i < hearts.len; i++)
     {
-        if(hearts[i].on)
-        {
-            hearts[i].on = false;
+        Heart* heartVal = (Heart*)VectorGet(&hearts, i);
+        
+        if(heartVal->on) {
+            heartVal->on = false; 
             break;
         }
     }
@@ -39,11 +42,14 @@ void RemoveHeart()
 
 void ObtainHeart()
 {
-    for(int i = 0; i < MAX_HEARTS; i++)
+    for(int i = 0; i < hearts.len; i++)
     {
-        if(hearts[i].on)
+        Heart* heartVal = (Heart*)VectorGet(&hearts, i);
+        Heart* prevHeartVal = (Heart*)VectorGet(&hearts, i - 1);
+        
+        if(heartVal->on && i - 1 >= 0) 
         {
-            if(i - 1 >= 0) hearts[i - 1].on = true;
+            prevHeartVal->on = true; 
             break;
         }
     }
