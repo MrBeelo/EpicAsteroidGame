@@ -3,6 +3,7 @@
 
 #include "../raylib/raylib.h"
 #include "../sprite/destroyer.h"
+#include "../main/vector.h"
 
 #define MAX_STARS 100
 #define STAR_SIZE 3
@@ -14,9 +15,10 @@ typedef struct Star
 	float rot;
 } Star;
 
-static Star stars[MAX_STARS] = { 0 };
+//static Star stars[MAX_STARS] = { 0 };
+extern Vector stars;
 
-void InitStar(Star* star);
+void SummonStar();
 void UpdateStar(Star* star, Destroyer *destroyer);
 void DrawStar(Star* star);
 

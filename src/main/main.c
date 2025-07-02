@@ -104,10 +104,12 @@ int main(void)
     int centerLoc = GetShaderLocation(shader, "screenCenter");
     int radiusLoc = GetShaderLocation(shader, "radius");
     int intensityLoc = GetShaderLocation(shader, "intensity");
+    
+    stars = NewVector(sizeof(Star));
 
     for(int i = 0; i < MAX_STARS; i++)
     {
-        InitStar(&stars[i]);
+        SummonStar();
     }
     
     for(int i = 0; i < MAX_PROJECTILES; i++)
@@ -167,10 +169,7 @@ int main(void)
             case PLAYING:
             UpdateDestroyer(&destroyer);
             
-            for(int i = 0; i < MAX_STARS; i++)
-            {
-                UpdateStar(&stars[i], &destroyer);
-            }
+            for(int i = 0; i < stars.len; i++) UpdateStar((Star*)VectorGet(&stars, i), &destroyer);
             
             activeProjectiles = 0;
             
@@ -212,7 +211,7 @@ int main(void)
         
         switch (gamestate) {
             case PLAYING:
-            for(int i = 0; i < MAX_STARS; i++) DrawStar(&stars[i]);
+            for(int i = 0; i < MAX_STARS; i++) DrawStar((Star*)VectorGet(&stars, i));
             for(int i = 0; i < MAX_PROJECTILES; i++) DrawProjectile(&projectiles[i]);
             for(int i = 0; i < asteroids.len; i++) DrawAsteroid((Asteroid*)VectorGet(&asteroids, i));
             for(int i = 0; i < MAX_HEARTS; i++) DrawHeart(&hearts[i]); 
@@ -268,6 +267,8 @@ int main(void)
     UnloadPowerup();
     UnloadSounds();
     UnloadShader(shader);
+    
+    DeleteVector(&stars);
     
     CloseAudioDevice();
     CloseWindow();

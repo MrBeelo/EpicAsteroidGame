@@ -1,13 +1,14 @@
 #include "../headers/sprite/star.h"
 #include "../headers/main/globals.h"
 
-void InitStar(Star *star)
+Vector stars;
+
+void SummonStar()
 {
-    star->origin.x = GetRandomValue(0, SIM_WINDOW_SIZE_X);
-    star->origin.y = GetRandomValue(0, SIM_WINDOW_SIZE_Y);
-    star->rot = GetRandomValue(0, 360);
-    star->pos.x = star->origin.x;
-    star->pos.y = star->origin.y;
+    float originX = GetRandomValue(0, SIM_WINDOW_SIZE_X);
+    float originY = GetRandomValue(0, SIM_WINDOW_SIZE_Y);
+    Star star = (Star){(Vector2){originX, originY}, (Vector2){originX, originY}, GetRandomValue(0, 360)};
+    VectorPushBack(&stars, star);
 }
 
 void UpdateStar(Star *star, Destroyer *destroyer)

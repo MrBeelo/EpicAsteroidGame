@@ -4,7 +4,6 @@
 #include <math.h>
 
 int activeAsteroids = 0;
-//Asteroid asteroids[MAX_ASTEROIDS] = { 0 };
 Vector asteroids;
 
 
@@ -39,7 +38,7 @@ void UpdateAsteroid(Asteroid* asteroid)
 {
     asteroid->pos.x += asteroid->vel.x * simDT;
     asteroid->pos.y += asteroid->vel.y * simDT;
-    if(asteroids.len > 20) VectorRemoveAt(&asteroids, 0);
+    if(asteroids.len > MAX_ASTEROIDS) VectorRemoveAt(&asteroids, 0);
     if(asteroid->rot <= 360) asteroid->rot += asteroid->rotSpeeed; else asteroid->rot = 0;
     asteroid->rect = (Rectangle){asteroid->pos.x, asteroid->pos.y, asteroid->size, asteroid->size};
 }
