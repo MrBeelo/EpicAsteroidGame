@@ -180,13 +180,8 @@ int main(void)
                 UpdateProjectile(&projectiles[i]);
             }
             
-            activeAsteroids = 0;
-            
-            for(int i = 0; i < MAX_ASTEROIDS; i++)
-            {
-                if(asteroids[i].active) activeAsteroids++;
-                UpdateAsteroid(&asteroids[i]);
-            }
+            activeAsteroids = asteroids.len;
+            for(int i = 0; i < asteroids.len; i++) UpdateAsteroid((Asteroid*)VectorGet(&asteroids, i));
             
             activeHearts = 0;
             
@@ -219,7 +214,7 @@ int main(void)
             case PLAYING:
             for(int i = 0; i < MAX_STARS; i++) DrawStar(&stars[i]);
             for(int i = 0; i < MAX_PROJECTILES; i++) DrawProjectile(&projectiles[i]);
-            for(int i = 0; i < MAX_ASTEROIDS; i++) DrawAsteroid(&asteroids[i]);
+            for(int i = 0; i < asteroids.len; i++) DrawAsteroid((Asteroid*)VectorGet(&asteroids, i));
             for(int i = 0; i < MAX_HEARTS; i++) DrawHeart(&hearts[i]); 
             for(int i = 0; i < MAX_POWERUPS; i++) DrawPowerup(&powerups[i]); 
             DrawDestroyer(&destroyer);

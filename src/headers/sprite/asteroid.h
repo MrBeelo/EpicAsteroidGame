@@ -2,8 +2,9 @@
 #define ASTEROID_H
 
 #include "../raylib/raylib.h"
+#include "../main/vector.h"
 
-#define MAX_ASTEROIDS 20
+//#define MAX_ASTEROIDS 20
 
 static Texture2D asteroidTexture;
 
@@ -16,11 +17,11 @@ typedef struct Asteroid
 	Rectangle rect;
 	float speed;
 	float rotSpeeed;
-	bool active;
 } Asteroid;
 
 extern int activeAsteroids;
-extern Asteroid asteroids[MAX_ASTEROIDS];
+//extern Asteroid asteroids[MAX_ASTEROIDS];
+extern Vector asteroids;
 
 void LoadAsteroid();
 void UnloadAsteroid();

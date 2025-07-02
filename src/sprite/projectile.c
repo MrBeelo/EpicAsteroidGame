@@ -46,11 +46,15 @@ void UpdateProjectile(Projectile *projectile)
         if(projectile->pos.x > SIM_WINDOW_SIZE_X + 10 || projectile->pos.x < -10 || projectile->pos.y > SIM_WINDOW_SIZE_Y + -10 || projectile->pos.y < 10) KillProjectile(projectile);
         projectile->rect = (Rectangle){projectile->pos.x, projectile->pos.y, projectile->size.x, projectile->size.y};
         
-        for(int i = 0; i < MAX_ASTEROIDS; i++) if(asteroids[i].active && CheckCollisionRecs(projectile->rect, asteroids[i].rect)) {
-            score += (100 - asteroids[i].size) * ((powerupActiveAliveTime < 10.0f && lastActivatedPowerup == SCORE) ? 2 : 1);
-            KillAsteroid(&asteroids[i]);
-            KillProjectile(projectile);
-            PlaySound(asteroidHit);
+        for(int i = 0; i < asteroids.len; i++) 
+        {
+            Asteroid* asteroidVal = (Asteroid*)VectorGet(&asteroids, i);
+            if(CheckCollisionRecs(projectile->rect, asteroidVal->rect)) {
+                score += (100 - asteroidVal->size) * ((powerupActiveAliveTime < 10.0f && lastActivatedPowerup == SCORE) ? 2 : 1);
+                VectorRemoveAt(&asteroids, i);
+                KillProjectile(projectile);
+                PlaySound(asteroidHit);
+            }
         }
     }
 }

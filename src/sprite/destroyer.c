@@ -80,9 +80,10 @@ void UpdateDestroyer(Destroyer *destroyer)
     if(destroyer->pos.x <= 0 || destroyer->pos.x >= SIM_WINDOW_SIZE_X - destroyer->size.x) destroyer->vel.x = 0;
     if(destroyer->pos.y <= 0 || destroyer->pos.y >= SIM_WINDOW_SIZE_Y - destroyer->size.y) destroyer->vel.y = 0;
     
-    for(int i = 0; i < MAX_ASTEROIDS; i++)
+    for(int i = 0; i < asteroids.len; i++)
     {
-        if(asteroids[i].active && CheckCollisionRecs(destroyer->hitbox, asteroids[i].rect) && destroyer->immunity == 0)
+        Asteroid* asteroidVal = (Asteroid*)VectorGet(&asteroids, i);
+        if(CheckCollisionRecs(destroyer->hitbox, asteroidVal->rect) && destroyer->immunity == 0)
         {
             destroyer->immunity = 300;
             RemoveHeart();
