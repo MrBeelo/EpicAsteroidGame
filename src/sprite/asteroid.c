@@ -30,8 +30,7 @@ void SummonAsteroid(void* context)
     Vector2 asteroidValVel = (Vector2){cos((asteroidValRot * DEG2RAD) - (PI / 2)) * asteroidValSpeed, sin((asteroidValRot * DEG2RAD) - (PI / 2)) * asteroidValSpeed};
     Vector2 asteroidValPos = (Vector2){(float)SIM_WINDOW_SIZE_X / 2 - asteroidValSize / 2 + cos((asteroidValRot * DEG2RAD) - (PI / 2)) * -SIM_WINDOW_SIZE_X, (float)SIM_WINDOW_SIZE_Y / 2 - asteroidValSize / 2 + sin((asteroidValRot * DEG2RAD) - (PI / 2)) * -SIM_WINDOW_SIZE_Y};
     Rectangle asteroidValRect = (Rectangle){asteroidValPos.x, asteroidValPos.y, asteroidValSize, asteroidValSize};
-    Asteroid asteroidVal = (Asteroid){asteroidValPos, asteroidValSize, asteroidValVel, asteroidValRot, asteroidValRect, asteroidValSpeed, asteroidValRotSpeed};
-    VectorPushBack(&asteroids, asteroidVal);
+    VectorPushBack(&asteroids, ((Asteroid){asteroidValPos, asteroidValSize, asteroidValVel, asteroidValRot, asteroidValRect, asteroidValSpeed, asteroidValRotSpeed}));
 }
 
 void UpdateAsteroid(Asteroid* asteroid)

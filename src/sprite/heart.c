@@ -18,8 +18,7 @@ void UnloadHeart()
 
 void SummonHeart(int index)
 {
-    Heart heart = (Heart){index, true};
-    VectorPushBack(&hearts, heart);
+    VectorPushBack(&hearts, ((Heart){index, true}));
 }
 
 void DrawHeart(Heart *heart)

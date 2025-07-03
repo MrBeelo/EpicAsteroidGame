@@ -16,8 +16,7 @@ void SummonProjectile(Vector2 pos, float rot)
     float projectileRot = rot;
     Rectangle projectileRect = (Rectangle){projectilePos.x, projectilePos.y, PROJECTILE_SIZE_X, PROJECTILE_SIZE_Y};
     PlaySound(laserShoot);
-    Projectile projectile = (Projectile){projectilePos, projectileVel, projectileRot, projectileRect, projectileSpeed};
-    VectorPushBack(&projectiles, projectile);
+    VectorPushBack(&projectiles, ((Projectile){projectilePos, projectileVel, projectileRot, projectileRect, projectileSpeed}));
 }
 
 void UpdateProjectile(Projectile *projectile)
@@ -29,9 +28,8 @@ void UpdateProjectile(Projectile *projectile)
     
     for(int i = 0; i < asteroids.len; i++) 
     {
-        Asteroid* asteroidVal = (Asteroid*)VectorGet(&asteroids, i);
-        if(CheckCollisionRecs(projectile->rect, asteroidVal->rect)) {
-            score += (100 - asteroidVal->size) * ((powerupActiveAliveTime < 10.0f && lastActivatedPowerup == SCORE) ? 2 : 1);
+        if(CheckCollisionRecs(projectile->rect, ((Asteroid*)VectorGet(&asteroids, i))->rect)) {
+            score += (100 - ((Asteroid*)VectorGet(&asteroids, i))->size) * ((powerupActiveAliveTime < 10.0f && lastActivatedPowerup == SCORE) ? 2 : 1);
             VectorRemoveAt(&asteroids, i);
             PlaySound(asteroidHit);
         }

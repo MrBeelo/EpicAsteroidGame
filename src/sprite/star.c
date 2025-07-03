@@ -7,8 +7,7 @@ void SummonStar()
 {
     float originX = GetRandomValue(0, SIM_WINDOW_SIZE_X);
     float originY = GetRandomValue(0, SIM_WINDOW_SIZE_Y);
-    Star star = (Star){(Vector2){originX, originY}, (Vector2){originX, originY}, GetRandomValue(0, 360)};
-    VectorPushBack(&stars, star);
+    VectorPushBack(&stars, ((Star){(Vector2){originX, originY}, (Vector2){originX, originY}, GetRandomValue(0, 360)}));
 }
 
 void UpdateStar(Star *star, Destroyer *destroyer)

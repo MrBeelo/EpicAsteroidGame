@@ -167,10 +167,7 @@ int main(void)
             for(int i = 0; i < asteroids.len; i++) UpdateAsteroid((Asteroid*)VectorGet(&asteroids, i));
             
             activeHearts = 0;
-            for(int i = 0; i < hearts.len; i++) {
-                Heart* heartVal =(Heart*)VectorGet(&hearts, i);
-                if(heartVal->on) activeHearts++; 
-            }
+            for(int i = 0; i < hearts.len; i++) if(((Heart*)VectorGet(&hearts, i))->on) activeHearts++; 
             
             powerupActiveAliveTime = GetTime() - powerupActiveStartTime;
             for(int i = 0; i < powerups.len; i++) UpdatePowerup((Powerup*)VectorGet(&powerups, i));   

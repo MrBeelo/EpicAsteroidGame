@@ -36,8 +36,7 @@ void SummonPowerup(void* context)
     enum PowerupType powerupType = (enum PowerupType)(GetRandomValue(0, 3));
     float powerupStartTime = GetTime();
     float powerupAliveTime = 0.0f;
-    Powerup powerup = (Powerup){powerupType, powerupPos, powerupRect, powerupStartTime, powerupAliveTime};
-    VectorPushBack(&powerups, powerup);
+    VectorPushBack(&powerups, ((Powerup){powerupType, powerupPos, powerupRect, powerupStartTime, powerupAliveTime}));
 }
 
 void UpdatePowerup(Powerup* powerup)

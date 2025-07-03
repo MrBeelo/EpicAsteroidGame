@@ -29,7 +29,7 @@ void DrawMainMenuScreen()
     const int creditsTextFontSize = 24;
     DrawAudiowideText(creditsText, (Vector2){(float)SIM_WINDOW_SIZE_X - MeasureAudiowideText(creditsText, creditsTextFontSize).x - 10, (float)SIM_WINDOW_SIZE_Y - MeasureAudiowideText(creditsText, creditsTextFontSize).y - 10}, creditsTextFontSize, (Color){255, 255, 255, 150});
     
-    const char *versionText = "1.0.1";
+    const char *versionText = "1.0.2";
     const int versionTextFontSize = 24;
     DrawAudiowideText(versionText, (Vector2){10, 10}, creditsTextFontSize, (Color){255, 255, 255, 150});
     

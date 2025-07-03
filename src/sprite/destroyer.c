@@ -82,8 +82,7 @@ void UpdateDestroyer(Destroyer *destroyer)
     
     for(int i = 0; i < asteroids.len; i++)
     {
-        Asteroid* asteroidVal = (Asteroid*)VectorGet(&asteroids, i);
-        if(CheckCollisionRecs(destroyer->hitbox, asteroidVal->rect) && destroyer->immunity == 0)
+        if(CheckCollisionRecs(destroyer->hitbox, ((Asteroid*)VectorGet(&asteroids, i))->rect) && destroyer->immunity == 0)
         {
             destroyer->immunity = 300;
             RemoveHeart();
@@ -94,10 +93,9 @@ void UpdateDestroyer(Destroyer *destroyer)
     
     for(int i = 0; i < powerups.len; i++)
     {
-        Powerup* powerupVal = (Powerup*)VectorGet(&powerups, i);
-        if(CheckCollisionRecs(destroyer->hitbox, powerupVal->rect))
+        if(CheckCollisionRecs(destroyer->hitbox, ((Powerup*)VectorGet(&powerups, i))->rect))
         {
-            lastActivatedPowerup = powerupVal->type;
+            lastActivatedPowerup = ((Powerup*)VectorGet(&powerups, i))->type;
             powerupActiveStartTime = GetTime();
             VectorPop(&powerups);
             if(lastActivatedPowerup == HEALTH) ObtainHeart();
@@ -107,8 +105,7 @@ void UpdateDestroyer(Destroyer *destroyer)
     
     if(destroyer->immunity > 0) destroyer->immunity -= simDT;
     
-    Heart* lastHeart = (Heart*)VectorGet(&hearts, hearts.len - 1);
-    if(!lastHeart->on)
+    if(!((Heart*)VectorGet(&hearts, hearts.len - 1))->on)
     {
         gamestate = DEAD;
         ResetDestroyer(destroyer);
@@ -128,8 +125,7 @@ void DrawDestroyer(Destroyer *destroyer)
     if(f3On) DrawRectangleLinesEx(destroyer->rect, 4, ORANGE);
     if(f3On) DrawRectangleLinesEx(destroyer->hitbox, 4, YELLOW);
     
-    Heart* secondLastHeart = (Heart*)VectorGet(&hearts, hearts.len - 2);
-    if(!secondLastHeart->on)
+    if(!((Heart*)VectorGet(&hearts, hearts.len - 2))->on)
     {
         const char *warningText = "WARNING: LOW HEALTH";
         const int warningTextFontSize = 48;
@@ -147,11 +143,7 @@ void ResetDestroyer(Destroyer* destroyer)
     destroyer->rect = (Rectangle){destroyer->pos.x, destroyer->pos.y, destroyer->size.x, destroyer->size.y};
     destroyer->hitbox = (Rectangle){destroyer->pos.x + DESTROYER_HITBOX_BUFFER, destroyer->pos.y + DESTROYER_HITBOX_BUFFER, destroyer->size.x - DESTROYER_HITBOX_BUFFER * 2, destroyer->size.y - DESTROYER_HITBOX_BUFFER * 2};
     
-    for(int i = 0; i < MAX_HEARTS; i++) 
-    {
-        Heart* heartVal = (Heart*)VectorGet(&hearts, i);
-        heartVal->on = true;
-    }
+    for(int i = 0; i < MAX_HEARTS; i++) ((Heart*)VectorGet(&hearts, i))->on = true;
     
     powerupActiveStartTime = GetTime();
     lastActivatedPowerup = NOTHING;
