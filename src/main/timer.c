@@ -1,5 +1,4 @@
-#include "../headers/main/timer.h"
-#include <stddef.h>
+#include "../headers/eag.h"
 
 void InitTimer(Timer *timer, float duration, bool repeat, bool autoStart, TimerCallback method, void* context)
 {

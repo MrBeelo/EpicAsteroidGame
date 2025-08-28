@@ -1,8 +1,4 @@
-#include "../headers/screen/main_menu_screen.h"
-#include "../headers/main/text.h"
-#include "../headers/main/globals.h"
-#include "../headers/sprite/destroyer.h"
-#include <math.h>
+#include "../headers/eag.h"
 
 void UpdateMainMenuScreen()
 {

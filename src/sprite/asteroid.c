@@ -1,7 +1,4 @@
-#include "../headers/sprite/asteroid.h"
-#include "../headers/main/globals.h"
-#include "../headers/sprite/destroyer.h"
-#include <math.h>
+#include "../headers/eag.h"
 
 int activeAsteroids = 0;
 Vector asteroids;

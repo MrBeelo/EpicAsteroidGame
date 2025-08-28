@@ -1,7 +1,4 @@
-#include "../headers/sprite/powerup.h"
-#include "../headers/main/globals.h"
-#include "../headers/main/text.h"
-#include "../headers/main/sounds.h"
+#include "../headers/eag.h"
 
 Vector powerups;
 float powerupActiveStartTime;

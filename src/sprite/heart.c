@@ -1,5 +1,4 @@
-#include "../headers/sprite/heart.h"
-#include "../headers/main/globals.h"
+#include "../headers/eag.h"
 
 int activeHearts;
 Vector hearts;

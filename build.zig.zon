@@ -1,0 +1,17 @@
+.{
+    .name = .EpicAsteroidGame,
+    .version = "1.0.0",
+    .fingerprint = 0x78bd36d8fe607f2f,
+    .minimum_zig_version = "0.15.1",
+    .dependencies = .{
+        .raylib = .{
+            .path = "raylib",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "README.md",
+    },
+}

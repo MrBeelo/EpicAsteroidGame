@@ -1,5 +1,4 @@
-#include "../headers/sprite/star.h"
-#include "../headers/main/globals.h"
+#include "../headers/eag.h"
 
 Vector stars;
 

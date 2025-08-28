@@ -1,6 +1,4 @@
-#include "../headers/main/vector.h"
-#include <stdlib.h>
-#include <string.h>
+#include "../headers/eag.h"
 
 Vector NewVector(size_t elem_size)
 {

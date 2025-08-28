@@ -1,22 +1,4 @@
-#include "../headers/raylib/raylib.h"
-#include "../headers/raylib/resource_dir.h"
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
-#include "../headers/main/globals.h"
-#include "../headers/sprite/star.h"
-#include "../headers/sprite/destroyer.h"
-#include "../headers/sprite/projectile.h"
-#include "../headers/sprite/asteroid.h"
-#include "../headers/main/timer.h"
-#include "../headers/main/text.h"
-#include "../headers/sprite/heart.h"
-#include "../headers/screen/main_menu_screen.h"
-#include "../headers/screen/dead_screen.h"
-#include "../headers/sprite/powerup.h"
-#include "../headers/main/sounds.h"
+#include "../headers/eag.h"
 
 Color SUPERDARKGRAY = {15, 15, 15, 255};
 bool shouldExitGame = false;
@@ -82,7 +64,7 @@ int GetHighScore()
 int main(void)
 {
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI | FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT);
-    InitWindow(SIM_WINDOW_SIZE_X, SIM_WINDOW_SIZE_Y, "Beelo's Raylib Template");
+    InitWindow(SIM_WINDOW_SIZE_X, SIM_WINDOW_SIZE_Y, "Epic Asteroid Game");
     InitAudioDevice();
     SearchAndSetResourceDir("res");
     SetExitKey(KEY_NULL);

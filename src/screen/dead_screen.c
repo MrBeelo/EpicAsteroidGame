@@ -1,7 +1,4 @@
-#include "../headers/screen/dead_screen.h"
-#include "../headers/main/text.h"
-#include "../headers/main/globals.h"
-#include <math.h>
+#include "../headers/eag.h"
 
 void UpdateDeadScreen()
 {

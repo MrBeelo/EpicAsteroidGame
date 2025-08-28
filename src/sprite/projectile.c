@@ -1,9 +1,4 @@
-#include "../headers/sprite/projectile.h"
-#include "../headers/main/globals.h"
-#include "../headers/sprite/asteroid.h"
-#include "../headers/sprite/powerup.h"
-#include "../headers/main/sounds.h"
-#include <math.h>
+#include "../headers/eag.h"
 
 int activeProjectiles = 0;
 Vector projectiles;

@@ -1,5 +1,4 @@
-#include "../headers/main/sounds.h"
-#include "../headers/main/globals.h"
+#include "../headers/eag.h"
 
 Sound asteroidHit;
 Sound destroyerHit;

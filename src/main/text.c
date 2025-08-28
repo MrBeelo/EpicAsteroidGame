@@ -1,4 +1,4 @@
-#include "../headers/main/text.h"
+#include "../headers/eag.h"
 
 void LoadFonts()
 {

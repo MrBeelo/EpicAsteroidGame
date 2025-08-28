@@ -1,12 +1,4 @@
-#include "../headers/sprite/destroyer.h"
-#include "../headers/main/globals.h"
-#include "../headers/sprite/projectile.h"
-#include "../headers/sprite/asteroid.h"
-#include "../headers/sprite/heart.h"
-#include "../headers/sprite/powerup.h"
-#include "../headers/main/sounds.h"
-#include "../headers/main/text.h"
-#include <math.h>
+#include "../headers/eag.h"
 
 void LoadDestroyer()
 {
